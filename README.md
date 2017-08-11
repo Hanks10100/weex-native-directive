@@ -1,3 +1,5 @@
+[Proposal](https://github.com/Hanks10100/incubator-weex/issues/1)
+
 # Weex Native Directive
 
 ## 需求背景
@@ -107,6 +109,8 @@
 ```
 
 ### 事件绑定
+
+> 对 jsfm 和客户端改造较大，对上层框架 Vue 和 Rax 的改造较小，下边的细节主要是 jsfm 和 native 之间的约定。
 
 在之前的约定中，如果节点上绑定了事件，只会将字符串格式的事件类型发给客户端：
 
@@ -235,19 +239,21 @@ handlerB(25, 'static', 'Tom', event)
 在 Vue 中的如下写法：
 
 ```html
-<div>
-  <text v-for="(item, i) in dataset.panels">{{i}}: {{item.name}}</text>
+<div v-for="(item, i) in dataset.panels">
+  <text>{{i}}: {{item.name}}</text>
 </div>
 ```
 
 或者 Rax 中的如下写法：
 
-```jsx
-<div> {
-  dataset.panels.map((item, i) => {
-    return (<text>{i}: {item.name}</text>)
-  })
-} </div>
+```js
+dataset.panels.map((item, i) => {
+  return (
+    <div>
+      <text>{i}: {item.name}</text>
+    </div>
+  )
+})
 ```
 
 将会生成如下格式的模板：
@@ -271,35 +277,37 @@ handlerB(25, 'static', 'Tom', event)
 }
 ```
 
-如果有如下数据，真实生成的 UI 节点如下所示：
+根据数据生成真实生成的 UI 节点如下所示：
 
 ```js
 // dataset.panels = [{ name: 'A' }, { name: 'B' }, { name: 'C' }]
 
-{
+[{
   type: 'div',
   children: [{
     type: 'text',
-    attr: {
-      value: '0: A',
-    }
-  }, {
-    type: 'text',
-    attr: {
-      value: '1: B',
-    }
-  }, {
-    type: 'text',
-    attr: {
-      value: '1: B',
-    }
+    attr: { value: '0: A' }
   }]
-}
+}, {
+  type: 'div',
+  children: [{
+    type: 'text',
+    attr: { value: '1: B' }
+  }]
+}, {
+  type: 'div',
+  children: [{
+    type: 'text',
+    attr: { value: '2: C' }
+  }]
+}]
 ```
 
 ### 生命周期指令
 
 > TODO: 待完善
+
+> 主要是 jsfm 和 native 之间的约定，前端框架改造较小
 
 当模板中包含了子组件的时候，会涉及如何触发子组件生命周期的问题。
 
@@ -412,3 +420,10 @@ handlerB(25, 'static', 'Tom', event)
 ## 使用限制
 
 + `<recycle-list>` 中只允许包含 `<cell-slot>` 子节点，不允许有其他类型的节点。
++ Vue 里 `this.$el` 和 `this.$refs` 属性失效了，因为在前端框架中只有模板的 vnode，没有真实渲染后的 vnode 节点。
+
+## 总结
+
+**这个特性并不破坏现有语法，是向后兼容的。**
+
+**对页面和组件的开发方式有些影响，整体上讲是更强调【数据驱动】和【声明式】的开发方式了。** 如果项目中存在从 UI 中获取数据或者是命令式创建节点的写法，将很难使用当前提到的优化方案。
