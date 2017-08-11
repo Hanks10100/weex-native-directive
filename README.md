@@ -235,21 +235,19 @@ handlerB(25, 'static', 'Tom', event)
 在 Vue 中的如下写法：
 
 ```html
-<div v-for="(item, i) in dataset.panels">
-  <text>{{i}}: {{item.name}}</text>
+<div>
+  <text v-for="(item, i) in dataset.panels">{{i}}: {{item.name}}</text>
 </div>
 ```
 
 或者 Rax 中的如下写法：
 
 ```jsx
-<div>
-{
+<div> {
   dataset.panels.map((item, i) => {
     return (<text>{i}: {item.name}</text>)
   })
-}
-</div>
+} </div>
 ```
 
 将会生成如下格式的模板：
