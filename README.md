@@ -33,7 +33,7 @@
 
 + `<recycle-list>`: 可复用节点的列表，只有该组件才支持当前的优化方案。
   + `list-data`: 数组格式的列表数据。
-  + `template-key`: 数据中用于区分子模板类型的字段名。
+  + `template-key`: 数据中用于区分子模板类型的字段名，默认值是 `"templateType"`。
 + `<cell-slot>`: 节点模板。
   + `template-type`: 当前模板的类型，只有和数据中的类型匹配才会渲染。
   + `key`: 列表中每条数据的唯一键值，用于优化。
@@ -55,42 +55,57 @@
 
 1 **如果节点的属性值是带有 `@binding` 键值的对象，则将该属性值其视为动态内容，对应了列表某条数据里的某个字段，在渲染时替换成数据中的值。**
 
-如果有如下数据和绑定：
+在上层语法中的如下写法：
+
+```html
+<text>{{expression}}</text>
+```
+
+将会编译成如下格式的模板：
 
 ```js
-// data: [{ expression: 'balala' }, { expression: 'hololo' }]
 {
+  type: 'text',
   attr: {
-    prop: { '@binding': 'expression' }
+    value: { '@binding': 'expression' }
   }
 }
 ```
 
-则会被渲染成：
+在客户端传入数据后会被渲染成：
 
 ```js
+// data: [{ expression: 'balala' }, { expression: 'hololo' }]
 [{
+  type: 'text',
   attr: {
-    prop: 'balala'
+    value: 'balala'
   }
 }, {
+  type: 'text',
   attr: {
-    prop: 'hololo'
+    value: 'hololo'
   }
 }]
 ```
 
 2 **如果节点的属性值是数组，则 map 其中所有元素，将其中带有 `@binding` 键值的对象视为动态内容，并替换成相应的值，最终 reduce 成一条数据（默认使用字符串拼接）。**
 
-如果有如下数据和绑定：
+在上层语法中的如下写法：
+
+```html
+<text>{{who}} only slept for {{count}} hours yesterday.</text>
+```
+
+将会编译成如下格式的模板：
 
 ```js
-// data: [{ who: 'He', count: 'five' }]
 {
+  type: 'text',
   attr: {
     prop: [
       { '@binding': 'who' },
-      'I only slept for ',
+      ' only slept for ',
       { '@binding': 'count' },
       ' hours yesterday.'
     ]
@@ -98,10 +113,12 @@
 }
 ```
 
-则会被渲染成：
+在客户端传入数据后会被渲染成：
 
 ```js
+// data: [{ who: 'He', count: 'five' }]
 [{
+  type: 'text',
   attr: {
     prop: 'He only slept for five hours yesterday.'
   }
@@ -187,7 +204,22 @@ handlerB(25, 'static', 'Tom', event)
 
 条件指令的描述将放在节点的属性中，指令名为 `[[match]]`，指令值是可以转成真假值的表达式。如果表达式对应的数据中的值为 falsy，则不渲染该节点，也不渲染其子节点。
 
+在前端框架里 `condition` 将会以字符串的格式原样发给客户端，由客户端负责解析，目前无法支持所有 js 语法，需要逐步支持各种操作符。
+
+1. `.` | `===` | `!==`
+2. `>` | `<` | `>=` | `<=`
+3. `()` | `!` | `&&` | `||`
+
 #### 使用范例
+
+在上层语法中的如下写法：
+
+```html
+<cell>
+  <div v-if="item.key === 3"></div>
+  <div v-if="item.key !== 3"></div>
+</cell>
+```
 
 如果有如下格式的节点模板：
 
@@ -315,7 +347,8 @@ dataset.panels.map((item, i) => {
 {
   attr: {
     '[[lifecycle]]': {
-      '@create': '2333' // 2333 是 callback id
+      '@create': '2333', // 2333 是 callback id
+      '@update': '2334'
     }
   }
 }
