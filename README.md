@@ -248,8 +248,8 @@ handlerB(25, 'static', 'Tom', event)
 {
   attr: {
     '[[repeat]]': {
-      '@exp': 'dataList',
-      '@key': 'index',
+      '@expression': 'dataList',
+      '@index': 'index',
       '@label': 'item'
     }
   }
@@ -260,8 +260,8 @@ handlerB(25, 'static', 'Tom', event)
 
 > 指令名和字段名都还待定。
 
-+ `@exp`: 将要被循环展开的数据字段名。
-+ `@key`: 下标或者数据键名。
++ `@expression`: 将要被循环展开的数据字段名。
++ `@index`: 下标或者数据键名。
 + `@label`: 数据循环展开后，每一条数据的名称。
 
 这三个字段指定的都是数据中的属性名，如果数据中的名称有冲突，以当前作用域（最内层）的值为准。
@@ -295,8 +295,8 @@ dataset.panels.map((item, i) => {
   type: 'div',
   attr: {
     '[[repeat]]': {
-      '@exp': 'dataset.panels',
-      '@key': 'i',
+      '@expression': 'dataset.panels',
+      '@index': 'i',
       '@label': 'item'
     }
   },
