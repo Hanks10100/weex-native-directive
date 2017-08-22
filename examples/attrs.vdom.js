@@ -3,6 +3,7 @@
   children: [{
       type: 'text',
       attr: {
+        lines: '3',
         dataName: { '@binding': 'title' }
       }
     },

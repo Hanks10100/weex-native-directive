@@ -13,15 +13,6 @@ function readFile (name) {
   return fs.readFileSync(path.resolve('./examples/', name), 'utf8')
 }
 
-function createContext () {
-  const config = Object.assign({ frameworks: { Vue } }, WeexRuntime.config)
-  const context = WeexRuntime.init(config)
-  context.registerModules({
-    timer: ['setTimeout', 'setInterval']
-  })
-  return context
-}
-
 function omitUseless (object) {
   if (object !== null && typeof object === 'object') {
     delete object.ref
@@ -35,10 +26,14 @@ function omitUseless (object) {
   return object
 }
 
-function compileAndExecute (template, additional) {
-  const context = createContext()
+function compileAndExecute (template, additional = '') {
+  WeexRuntime.config.frameworks = { Vue }
+  const context = WeexRuntime.init(WeexRuntime.config)
+  context.registerModules({
+    timer: ['setTimeout', 'setInterval']
+  })
   return new Promise(resolve => {
-    const id = String(Date.now() + Math.random())
+    const id = String(Date.now() * Math.random())
     const { render, staticRenderFns } = compile(template)
     const instance = context.createInstance(id, `
       // { "framework": "Vue" }
@@ -51,6 +46,7 @@ function compileAndExecute (template, additional) {
     `)
     setTimeout(() => {
       resolve(omitUseless(instance.document.body.toJSON()))
+      context.destroyInstance(id)
     }, 10)
   })
 }
@@ -60,8 +56,6 @@ function createTestSuit (name) {
     const source = readFile(`${name}.vue`)
     const target = readFile(`${name}.vdom.js`)
     compileAndExecute(source).then($root => {
-      // console.log($root)
-      // console.log(target)
       expect($root).to.deep.equal(eval(`(${target})`))
       done()
     }).catch(done)
@@ -73,6 +67,11 @@ describe('Compiler', () => {
 })
 
 describe.skip('Vue examples', () => {
-  it('binding in text node', createTestSuit('text'))
-  it('binding in attributes', createTestSuit('attrs'))
+  it('binding text node', createTestSuit('text'))
+  it('binding attributes', createTestSuit('attrs'))
+  it('v-bind', createTestSuit('v-bind'))
+  it('v-if', createTestSuit('v-if'))
+  it('v-else', createTestSuit('v-else'))
+  it('v-for', createTestSuit('v-for'))
+  it('v-for with key', createTestSuit('v-for-key'))
 })
