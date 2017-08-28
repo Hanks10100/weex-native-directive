@@ -5,11 +5,11 @@ const uniqueId = (function(){
   return () => String(count++)
 })()
 
-function sendNode (listData, vdom) {
+function sendNode (data, vdom) {
   const send = typeof id === 'undefined' 
     ? task => sendTasks([task], -1)
     : task => sendTasks(id, [task], -1)
-  
+
   send({
     module: 'dom',
     method: 'createBody',
@@ -17,18 +17,26 @@ function sendNode (listData, vdom) {
       ref: '_root',
       type: 'recycle-list',
       attr: {
-        listData: listData,
+        listData: data,
         templateKey: 'type'
       },
-      children: [vdom]
+      children: [{
+        ref: uniqueId(),
+        type: 'cell-slot',
+        templateType: 'A',
+        children: [vdom]
+      }]
     }]
   })
-
   send({ module: 'dom', method: 'createFinish', args: [] })
 }
 
-const listData = []
-sendNode(listData, {
+const data = [
+  { index: 0, type: 'A' },
+  { index: 1, type: 'A' },
+  { index: 2, type: 'A' },
+]
+sendNode(data, {
   ref: uniqueId(),
   type: 'div',
   event: [{
@@ -43,7 +51,7 @@ sendNode(listData, {
         args: [
           { '@binding': 'index' },
           'static',
-          { '@binding': 'item.name' },
+          { '@binding': 'type' },
           { '@binding': '$event' }
         ]
       }],

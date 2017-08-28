@@ -31,33 +31,36 @@ function sendNode (data, vdom) {
   send({ module: 'dom', method: 'createFinish', args: [] })
 }
 
-const data = [
-  { type: 'A', dynamic: 'number', two: '2', four: '4' },
-  { type: 'A', dynamic: '数字', two: '二', four: '四' }
-]
+const data = [{
+  type: 'A',
+  group: [{ name: 'first' }, { name: 'second' }]
+}, {
+  type: 'A',
+  group: [{ name: '第一' }, { name: '第二' }]
+}]
 sendNode(data, {
-  type: 'div',
+  type: 'list',
   children: [{
-      type: 'text',
+      type: 'cell',
       attr: {
-        value: 'static'
-      }
-    }, {
-      type: 'text',
-      attr: {
-        value: { '@binding': 'dynamic' }
-      }
-    }, {
-      type: 'text',
-      attr: {
-        value: [
-          'one ',
-          { '@binding': 'two' },
-          ' three ',
-          { '@binding': 'four' },
-          ' five'
-        ]
-      }
+        '[[repeat]]': {
+          '@expression': 'group',
+          '@index': 'index',
+          '@label': 'item'
+        },
+        append: 'tree',
+        key: {
+          '@binding': 'index'
+        }
+      },
+      children: [{
+        type: 'text',
+        attr: {
+          value: {
+            '@binding': 'item.name + index'
+          }
+        }
+      }]
     }
   ]
 })

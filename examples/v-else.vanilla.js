@@ -32,31 +32,22 @@ function sendNode (data, vdom) {
 }
 
 const data = [
-  { type: 'A', dynamic: 'number', two: '2', four: '4' },
-  { type: 'A', dynamic: '数字', two: '二', four: '四' }
+  { type: 'A', source: 'src/image.png' },
+  { type: 'A', placeholder: 'placeholder.png' }
 ]
 sendNode(data, {
   type: 'div',
   children: [{
-      type: 'text',
+      type: 'image',
       attr: {
-        value: 'static'
+        '[[match]]': 'source',
+        src: { '@binding': 'source' }
       }
     }, {
-      type: 'text',
+      type: 'image',
       attr: {
-        value: { '@binding': 'dynamic' }
-      }
-    }, {
-      type: 'text',
-      attr: {
-        value: [
-          'one ',
-          { '@binding': 'two' },
-          ' three ',
-          { '@binding': 'four' },
-          ' five'
-        ]
+        '[[match]]': '!(source)',
+        src: { '@binding': 'placeholder' }
       }
     }
   ]

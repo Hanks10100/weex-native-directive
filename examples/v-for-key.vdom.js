@@ -4,7 +4,7 @@
       type: 'cell',
       attr: {
         '[[repeat]]': {
-          '@expression': 'list',
+          '@expression': 'group',
           '@index': 'index',
           '@label': 'item'
         },

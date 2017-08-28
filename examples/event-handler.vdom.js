@@ -11,7 +11,7 @@
         args: [
           { '@binding': 'index' },
           'static',
-          { '@binding': 'item.name' },
+          { '@binding': 'type' },
           { '@binding': '$event' }
         ]
       }],
