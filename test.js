@@ -74,4 +74,32 @@ describe.skip('Vue examples', () => {
   it('v-else', createTestSuit('v-else'))
   it('v-for', createTestSuit('v-for'))
   it('v-for with key', createTestSuit('v-for-key'))
+
+  it('v-on', done => {
+    const source = readFile(`v-on.vue`)
+    const target = readFile(`v-on.vdom.js`)
+    compileAndExecute(source, `
+      methods: {
+        handler: function () {},
+        move: function () {}
+      }
+    `).then($root => {
+      expect($root).to.deep.equal(eval(`(${target})`))
+      done()
+    }).catch(done)
+  })
+
+  it('event handler', done => {
+    const source = readFile(`event-handler.vue`)
+    const target = readFile(`event-handler.vdom.js`)
+    compileAndExecute(source, `
+      methods: {
+        onclick: function () {},
+        onappear: function () {}
+      }
+    `).then($root => {
+      expect($root).to.deep.equal(eval(`(${target})`))
+      done()
+    }).catch(done)
+  })
 })
