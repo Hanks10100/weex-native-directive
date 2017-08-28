@@ -48,176 +48,165 @@ sendTasks(id, [{
             "listData": generateData('ACBCCABAACB'),
             "templateKey": "type"
         },
-        "style": {}
-    }]
-}])
+        "children": [
 
-// <cell-slot> A
-sendTasks(id, [{
-    module: 'dom',
-    method: 'addElement',
-    args: ["_root", {
-        "ref": uniqueId(),
-        "type": "cell-slot",
-        "attr": {
-            "templateType": "A",
-            "append": "tree"
-        },
-        "style": {
-            "width": 650,
-            "marginLeft": 50,
-            "marginTop": 50,
-            "borderWidth": 2,
-            "borderStyle": "solid",
-            "borderColor": "#DDDDDD"
-        },
-        "children": [{
+          // <cell-slot> A
+          {
             "ref": uniqueId(),
-            "type": "text",
+            "type": "cell-slot",
             "attr": {
-                "dataLabel": { "@binding": "label" },
-                "value": ["Current Label: ", { "@binding": "label" }]
-            }
-        }, {
-            "ref": uniqueId(),
-            "type": "text",
-            "attr": {
-                "[[match]]": "number > 20",
-                "value": "Large"
-            }
-        }, {
-            "ref": uniqueId(),
-            "type": "text",
-            "attr": {
-                "[[match]]": "number > 10",
-                "value": "Medium"
-            }
-        }, {
-            "ref": uniqueId(),
-            "type": "text",
-            "attr": {
-                "[[match]]": "number <= 10",
-                "value": "Small"
-            }
-        }]
-    }, -1]
-}])
-
-// <cell-slot> B
-sendTasks(id, [{
-    module: 'dom',
-    method: 'addElement',
-    args: ["_root", {
-        "ref": uniqueId(),
-        "type": "cell-slot",
-        "attr": {
-            "templateType": "B",
-            "append": "tree"
-        },
-        "style": {
-            "width": 650,
-            "marginLeft": 50,
-            "marginTop": 50,
-            "borderWidth": 2,
-            "borderStyle": "solid",
-            "borderColor": "#DDDDDD"
-        },
-        children: [{
-            "ref": uniqueId(),
-            "type": "div",
-            "attr": {
-              "[[repeat]]": {
-                "@exp": "dataset",
-                "@key": "i",
-                "@label": "item"
-              }
+                "templateType": "A",
+                "append": "tree"
+            },
+            "style": {
+                "width": 650,
+                "marginLeft": 50,
+                "marginTop": 50,
+                "borderWidth": 2,
+                "borderStyle": "solid",
+                "borderColor": "#DDDDDD"
             },
             "children": [{
                 "ref": uniqueId(),
                 "type": "text",
                 "attr": {
-                    "value": banner
+                    "dataLabel": { "@binding": "label" },
+                    "value": ["Current Label: ", { "@binding": "label" }]
                 }
             }, {
                 "ref": uniqueId(),
                 "type": "text",
                 "attr": {
-                    "value": [{ "@binding": "i" }, ": ", { "@binding": "item.name" }]
+                    "[[match]]": "number > 20",
+                    "value": "Large"
+                }
+            }, {
+                "ref": uniqueId(),
+                "type": "text",
+                "attr": {
+                    "[[match]]": "number > 10",
+                    "value": "Medium"
+                }
+            }, {
+                "ref": uniqueId(),
+                "type": "text",
+                "attr": {
+                    "[[match]]": "number <= 10",
+                    "value": "Small"
                 }
             }]
-        }]
-    }, -1]
-}])
+          },
 
-// <cell-slot> C
-sendTasks(id, [{
-    module: 'dom',
-    method: 'addElement',
-    args: ["_root", {
-        "ref": uniqueId(),
-        "type": "cell-slot",
-        "attr": {
-            "templateType": "C",
-            "append": "tree"
-        },
-        "style": {
-            "width": 650,
-            "marginLeft": 50,
-            "marginTop": 50,
-            "borderWidth": 2,
-            "borderStyle": "solid",
-            "borderColor": "#DDDDDD"
-        },
-        "children": [{
+          // <cell-slot> B
+          {
             "ref": uniqueId(),
-            "type": "div",
-            "event": [{
-              "type": "click",
-              "args": [{ "@binding": "index" }]
-            }],
+            "type": "cell-slot",
+            "attr": {
+                "templateType": "B",
+                "append": "tree"
+            },
+            "style": {
+                "width": 650,
+                "marginLeft": 50,
+                "marginTop": 50,
+                "borderWidth": 2,
+                "borderStyle": "solid",
+                "borderColor": "#DDDDDD"
+            },
             "children": [{
                 "ref": uniqueId(),
-                "type": "text",
+                "type": "div",
                 "attr": {
-                    "value": ["Number: ", { "@binding": "count" }]
+                  "[[repeat]]": {
+                    "@exp": "dataset",
+                    "@key": "i",
+                    "@label": "item"
+                  }
                 },
-                "style": {
-                    "width": 400,
-                    "fontSize": 50,
-                    "marginTop": 50,
-                    "marginLeft": 50,
-                    "borderWidth": 2,
-                    "borderStyle": "solid",
-                    "borderColor": "#CCCCCC",
-                    "backgroundColor": "#F4F4F4"
-                }
-            }, {
-                "ref": uniqueId(),
-                "type": "text",
-                "attr": {
-                    "[[lifecycle]]": {
-                      "@create": createId,
-                      "@update": updateId,
-                    },
-                    "value": [
-                      { "@binding": "count" },
-                      ` * ${ratio} = `,
-                      { "@binding": `count * ${ratio}` }
-                    ]
-                },
-                "style": {
-                    "width": 400,
-                    "fontSize": 50,
-                    "marginTop": 50,
-                    "marginLeft": 50,
-                    "borderWidth": 2,
-                    "borderStyle": "solid",
-                    "borderColor": "#CCCCCC",
-                    "backgroundColor": "#F4F4F4"
-                }
+                "children": [{
+                    "ref": uniqueId(),
+                    "type": "text",
+                    "attr": {
+                        "value": banner
+                    }
+                }, {
+                    "ref": uniqueId(),
+                    "type": "text",
+                    "attr": {
+                        "value": [{ "@binding": "i" }, ": ", { "@binding": "item.name" }]
+                    }
+                }]
             }]
-        }]
-    }, -1]
+          },
+          
+          // <cell-slot> C
+          {
+            "ref": uniqueId(),
+            "type": "cell-slot",
+            "attr": {
+                "templateType": "C",
+                "append": "tree"
+            },
+            "style": {
+                "width": 650,
+                "marginLeft": 50,
+                "marginTop": 50,
+                "borderWidth": 2,
+                "borderStyle": "solid",
+                "borderColor": "#DDDDDD"
+            },
+            "children": [{
+                "ref": uniqueId(),
+                "type": "div",
+                "event": [{
+                  "type": "click",
+                  "args": [{ "@binding": "index" }]
+                }],
+                "children": [{
+                    "ref": uniqueId(),
+                    "type": "text",
+                    "attr": {
+                        "value": ["Number: ", { "@binding": "count" }]
+                    },
+                    "style": {
+                        "width": 400,
+                        "fontSize": 50,
+                        "marginTop": 50,
+                        "marginLeft": 50,
+                        "borderWidth": 2,
+                        "borderStyle": "solid",
+                        "borderColor": "#CCCCCC",
+                        "backgroundColor": "#F4F4F4"
+                    }
+                }, {
+                    "ref": uniqueId(),
+                    "type": "text",
+                    "attr": {
+                        "[[lifecycle]]": {
+                          "@create": createId,
+                          "@update": updateId,
+                        },
+                        "value": [
+                          { "@binding": "count" },
+                          ` * ${ratio} = `,
+                          { "@binding": `count * ${ratio}` }
+                        ]
+                    },
+                    "style": {
+                        "width": 400,
+                        "fontSize": 50,
+                        "marginTop": 50,
+                        "marginLeft": 50,
+                        "borderWidth": 2,
+                        "borderStyle": "solid",
+                        "borderColor": "#CCCCCC",
+                        "backgroundColor": "#F4F4F4"
+                    }
+                }]
+            }]
+          }
+        ]
+    }]
 }])
 
 sendTasks(id, [{ module: 'dom', method: 'createFinish', args: [] }], -1)
