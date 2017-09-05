@@ -118,8 +118,8 @@ sendTasks(id, [{
                 "type": "div",
                 "attr": {
                   "[[repeat]]": {
-                    "@exp": "dataset",
-                    "@key": "i",
+                    "@expression": "dataset",
+                    "@index": "i",
                     "@label": "item"
                   }
                 },
