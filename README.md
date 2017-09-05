@@ -484,6 +484,25 @@ dataset.panels.map((item, i) => {
 + `<recycle-list>` 中只允许包含 `<cell-slot>` 子节点，不允许有其他类型的节点。
 + Vue 里 `this.$el` 和 `this.$refs` 属性失效了，因为在前端框架中只有模板的 vnode，没有真实渲染后的 vnode 节点。
 
+## scroller/list 原有功能保留:
+
+* 属性:
+  * [x] show-scrollbar
+  * [x] scrollable
+  * [ ] scroll-direction
+* cell-slot属性
+  * [x] recycle
+  * [x] positon:sticky (行为同 list header)
+* 事件:
+  * [x] appear/disappear
+  * [x] loadmore
+  * [x] onscroll
+* 子组件:
+  * [x] fixed
+  * [x] refresh/loading
+* 行为:
+  * [x] scrollTo
+
 ## 总结
 
 **这个特性并不破坏现有语法，是向后兼容的。**
