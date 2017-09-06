@@ -34,9 +34,15 @@ function compileAndExecute (template, additional = '') {
   })
   return new Promise(resolve => {
     const id = String(Date.now() * Math.random())
-    const { render, staticRenderFns } = compile(template)
+    const { render, staticRenderFns } = compile(
+      `<recycle-list>
+        <cell-slot>${template}</cell-slot>
+      </recycle-list>`
+    )
+
     const instance = context.createInstance(id, `
       // { "framework": "Vue" }
+      Vue.config.silent = true
       new Vue({
         el: '#whatever',
         render: ${toFunction(render)},
@@ -44,8 +50,9 @@ function compileAndExecute (template, additional = '') {
         ${additional}
       })
     `)
+
     setTimeout(() => {
-      resolve(omitUseless(instance.document.body.toJSON()))
+      resolve(omitUseless(instance.document.body.children[0].children[0].toJSON()))
       context.destroyInstance(id)
     }, 10)
   })
@@ -66,8 +73,12 @@ describe('Compiler', () => {
   it('compiler works', createTestSuit('_'))
 })
 
-describe.skip('Vue examples', () => {
+describe('Vue examples', () => {
   it('binding text node', createTestSuit('text'))
+})
+
+describe.skip('Pending examples', () => {
+
   it('binding attributes', createTestSuit('attrs'))
   it('v-bind', createTestSuit('v-bind'))
   it('v-if', createTestSuit('v-if'))
