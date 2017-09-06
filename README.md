@@ -158,17 +158,16 @@
   type: 'div',
   event: ['click', {
     type: 'appear',
-    args: [
+    params: [
       { '@binding': 'index' },
       'static',
-      { '@binding': 'item.name' },
-      { '@binding': '$event' }
+      { '@binding': 'item.name' }
     ]
   }]
 }
 ```
 
-其中 `click` 事件绑定的是没有额外参数的处理函数，行为和之前保持一致，只把事件类型的字符串发给客户端。 `appear` 事件则指定了四个参数，在发给客户端时，除了声明了绑定的事件类型，还声明了参数的数据绑定。`@binding` 语法和上一节 *属性值绑定* 的语法相同，`index` 和 `item.name` 将从当前对应的数据中取值，`$event` 表示事件对象。
+其中 `click` 事件绑定的是没有额外参数的处理函数，行为和之前保持一致，只把事件类型的字符串发给客户端。 `appear` 事件则指定了四个参数，在发给客户端时，除了声明了绑定的事件类型，还声明了参数的数据绑定。`@binding` 语法和上一节 *属性值绑定* 的语法相同，`index` 和 `item.name` 将从当前对应的数据中取值。`$event` 表示事件对象，由 jsfm 和上层前端框架封装，不传给客户端处理。
 
 客户端 fireEvent 时传递的数据格式如下：
 
@@ -178,7 +177,7 @@ callJS({
   method: 'fireEvent',
 
   // 传递给事件处理函数的参数
-  params: [25, 'static', 'Tom', {/* event */}],
+  params: [25, 'static', 'Tom'],
 
   // 传递给 jsfm 中 fireEvent 方法的参数
   args: [instanceId, element, type, ...]
