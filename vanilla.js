@@ -160,7 +160,7 @@ sendTasks(id, [{
                 "type": "div",
                 "event": [{
                   "type": "click",
-                  "args": [{ "@binding": "index" }]
+                  "params": [{ "@binding": "index" }]
                 }],
                 "children": [{
                     "ref": uniqueId(),
