@@ -26,7 +26,7 @@ function omitUseless (object) {
   return object
 }
 
-function compileAndExecute (template, additional = '') {
+function execute (code) {
   WeexRuntime.config.frameworks = { Vue }
   const context = WeexRuntime.init(WeexRuntime.config)
   context.registerModules({
@@ -34,27 +34,31 @@ function compileAndExecute (template, additional = '') {
   })
   return new Promise(resolve => {
     const id = String(Date.now() * Math.random())
-    const { render, staticRenderFns } = compile(
-      `<recycle-list>
-        <cell-slot>${template}</cell-slot>
-      </recycle-list>`
-    )
-
-    const instance = context.createInstance(id, `
-      // { "framework": "Vue" }
-      Vue.config.silent = true
-      new Vue({
-        el: '#whatever',
-        render: ${toFunction(render)},
-        staticRenderFns: [${staticRenderFns.map(toFunction).join(',')}],
-        ${additional}
-      })
-    `)
-
+    const instance = context.createInstance(id, code)
     setTimeout(() => {
-      resolve(omitUseless(instance.document.body.children[0].children[0].toJSON()))
+      resolve(omitUseless(instance.document.body.toJSON()))
       context.destroyInstance(id)
     }, 10)
+  })
+}
+
+function compileAndExecute (template, additional = '') {
+  const { render, staticRenderFns } = compile(
+    `<recycle-list>
+      <cell-slot>${template}</cell-slot>
+    </recycle-list>`
+  )
+  return execute(`
+    // { "framework": "Vue" }
+    Vue.config.silent = true
+    new Vue({
+      el: '#whatever',
+      render: ${toFunction(render)},
+      staticRenderFns: [${staticRenderFns.map(toFunction).join(',')}],
+      ${additional}
+    })
+  `).then($root => {
+    return $root.children[0].children[0]
   })
 }
 
@@ -74,21 +78,21 @@ describe('Compiler', () => {
 })
 
 describe('Vue examples', () => {
-  it('binding text node', createTestSuit('text'))
+  it('binding text node', createTestSuit('basic/text'))
 })
 
 describe.skip('Pending examples', () => {
 
-  it('binding attributes', createTestSuit('attrs'))
-  it('v-bind', createTestSuit('v-bind'))
-  it('v-if', createTestSuit('v-if'))
-  it('v-else', createTestSuit('v-else'))
-  it('v-for', createTestSuit('v-for'))
-  it('v-for with key', createTestSuit('v-for-key'))
+  it('binding attributes', createTestSuit('basic/attrs'))
+  it('v-bind', createTestSuit('basic/v-bind'))
+  it('v-if', createTestSuit('basic/v-if'))
+  it('v-else', createTestSuit('basic/v-else'))
+  it('v-for', createTestSuit('basic/v-for'))
+  it('v-for with key', createTestSuit('basic/v-for-key'))
 
   it('v-on', done => {
-    const source = readFile(`v-on.vue`)
-    const target = readFile(`v-on.vdom.js`)
+    const source = readFile(`basic/v-on.vue`)
+    const target = readFile(`basic/v-on.vdom.js`)
     compileAndExecute(source, `
       methods: {
         handler: function () {},
@@ -101,8 +105,8 @@ describe.skip('Pending examples', () => {
   })
 
   it('event handler', done => {
-    const source = readFile(`event-handler.vue`)
-    const target = readFile(`event-handler.vdom.js`)
+    const source = readFile(`basic/event-handler.vue`)
+    const target = readFile(`basic/event-handler.vdom.js`)
     compileAndExecute(source, `
       methods: {
         onclick: function () {},
@@ -110,6 +114,18 @@ describe.skip('Pending examples', () => {
       }
     `).then($root => {
       expect($root).to.deep.equal(eval(`(${target})`))
+      done()
+    }).catch(done)
+  })
+})
+
+describe.skip('Component examples', () => {
+  it('sample', done => {
+    const source = readFile(`component/sample.source.js`)
+    const output = readFile(`component/sample.output.js`)
+    execute(source).then($root => {
+      delete $root.attr.listData
+      expect($root).to.deep.equal(eval(`(${output})`))
       done()
     }).catch(done)
   })
