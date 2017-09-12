@@ -52,8 +52,8 @@ var Floor = {
   props: ['floor'],
   render: function (h) {
     return h('div', { style: { backgroundColor: '#FFFFFF', marginBottom: 15 } }, [
-      h('text', { style: floorStyles.title, attrs: { value: { '@binding': 'floor.title' } } }), // TODO: style
-      h('text', { style: floorStyles.desc, attrs: { value: { '@binding': 'floor.desc' }, lines: 2 } }), // TODO: style
+      h('text', { style: floorStyles.title, attrs: { value: { '@binding': 'floor.title' } } }),
+      h('text', { style: floorStyles.desc, attrs: { value: { '@binding': 'floor.desc' }, lines: 2 } }),
       h('div', { style: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 } }, [
         h('image', {
           style: { width: 245, height: 245 },
@@ -68,7 +68,7 @@ var Floor = {
           }
         })
       ]),
-      h('text', { style: floorStyles.comment, attrs: { value: [{ '@binding': 'floor.count' }, ' 人说好'] } }) // TODO: style
+      h('text', { style: floorStyles.comment, attrs: { value: [{ '@binding': 'floor.count' }, ' 人说好'] } })
     ])
   }
 }
@@ -214,7 +214,7 @@ new Vue({
     return h('recycle-list', {
         appendAsTree: true,
         style: { backgroundColor: '#F5F5F5' },
-        attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item' }
+        attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item', index: 'index' }
       }, [
         h('cell-slot', { attrs: { templateType: 'A' } }, [
           h('div', { style: { backgroundColor: '#EEEEEE' } }, [
@@ -222,10 +222,10 @@ new Vue({
           ])
         ]),
         h('cell-slot', { attrs: { templateType: 'floor' } }, [
-          h('floor', { attrs: { floor: { '@binding': 'item' } } })
+          h('floor', { attrs: { floor: { '@binding': 'item', '@alias': 'floor' } } })
         ]),
         h('cell-slot', { attrs: { templateType: 'app-list' } }, [
-          h('app-list', { attrs: { apps: { '@binding': 'item.apps' } } })
+          h('app-list', { attrs: { apps: { '@binding': 'item.apps', '@alias': 'apps' } } })
         ])
       ]
     )
