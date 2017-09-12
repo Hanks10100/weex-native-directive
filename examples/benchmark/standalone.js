@@ -11,7 +11,6 @@ var Line = {
         paddingTop: 15,
         paddingBottom: 15,
         color: '#666666',
-        backgroundColor: '#EEEEEE',
         marginBottom: 10,
       },
       attrs: {
@@ -212,15 +211,17 @@ new Vue({
     }
   },
   render: function (h) {
-    return h('recycle-list',
-      { appendAsTree: true, attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item' } },
-      [
+    return h('recycle-list', {
+        appendAsTree: true,
+        style: { backgroundColor: '#F5F5F5' },
+        attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item' }
+      }, [
         h('cell-slot', { attrs: { templateType: 'A' } }, [
-          h('text', { attrs: { value: ['name: ', { '@binding': 'item.name' }] } }),
-          h('line', { attrs: { name: { '@binding': 'item.name' }, kind: { '@binding': 'item.kind' } } })
+          h('div', { style: { backgroundColor: '#EEEEEE' } }, [
+            h('line', { attrs: { name: { '@binding': 'item.name' }, kind: { '@binding': 'item.kind' } } })
+          ])
         ]),
         h('cell-slot', { attrs: { templateType: 'floor' } }, [
-          h('text', { attrs: { value: ['type: ', { '@binding': 'item.type' }] } }),
           h('floor', { attrs: { floor: { '@binding': 'item' } } })
         ]),
         h('cell-slot', { attrs: { templateType: 'app-list' } }, [
