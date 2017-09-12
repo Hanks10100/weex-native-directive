@@ -60,8 +60,6 @@ sendTasks(id, [{
             },
             "style": {
                 "width": 650,
-                "marginLeft": 50,
-                "marginTop": 50,
                 "borderWidth": 2,
                 "borderStyle": "solid",
                 "borderColor": "#DDDDDD"
@@ -107,8 +105,6 @@ sendTasks(id, [{
             },
             "style": {
                 "width": 650,
-                "marginLeft": 50,
-                "marginTop": 50,
                 "borderWidth": 2,
                 "borderStyle": "solid",
                 "borderColor": "#DDDDDD"
@@ -149,8 +145,6 @@ sendTasks(id, [{
             },
             "style": {
                 "width": 650,
-                "marginLeft": 50,
-                "marginTop": 50,
                 "borderWidth": 2,
                 "borderStyle": "solid",
                 "borderColor": "#DDDDDD"
@@ -160,7 +154,7 @@ sendTasks(id, [{
                 "type": "div",
                 "event": [{
                   "type": "click",
-                  "args": [{ "@binding": "index" }]
+                  "params": [{ "@binding": "index" }]
                 }],
                 "children": [{
                     "ref": uniqueId(),
