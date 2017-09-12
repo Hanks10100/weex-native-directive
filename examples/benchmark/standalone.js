@@ -127,7 +127,7 @@ var floorData = [
   }
 ]
 
-// 某种应用列表展示 http://dotwe.org/vue/9ee9e79f5cef276c4c37a866aceb31e6
+// 某种应用列表展示 http://dotwe.org/vue/4fcf51377cea77dfa355594669bde7f7
 var appListStyle = {
   box: {
     width: 180,
@@ -152,19 +152,21 @@ var appListStyle = {
 var AppList = {
   props: ['apps'],
   render: function (h) {
-    return h('div', {
-      style: appListStyle.box,
-      attrs: {
-        '[[repeat]]': {
-          '@expression': 'apps',
-          '@index': 'i',
-          '@label': 'app'
+    return h('div', { style: { flexDirection: 'row' } }, [
+      h('div', {
+        style: appListStyle.box,
+        attrs: {
+          '[[repeat]]': {
+            '@expression': 'apps',
+            '@index': 'i',
+            '@label': 'app'
+          },
+          key: { '@binding': 'i' }
         },
-        key: { '@binding': 'i' }
-      },
-    }, [
-      h('image', { style: appListStyle.icon, attrs: { src: { '@binding': 'app.icon' } } }),
-      h('text', { style: appListStyle.title, attrs: { value: { '@binding': 'app.title' } } })
+      }, [
+        h('image', { style: appListStyle.icon, attrs: { src: { '@binding': 'app.icon' } } }),
+        h('text', { style: appListStyle.title, attrs: { value: { '@binding': 'app.title' } } })
+      ])
     ])
   }
 }
