@@ -1,6 +1,7 @@
 {
   type: 'recycle-list',
   attr: {
+    append: 'tree',
     templateKey: 'type',
     alias: 'item'
   },

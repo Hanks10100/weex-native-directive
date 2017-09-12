@@ -22,7 +22,7 @@ new Vue({
   },
   render: function (h) {
     return h('recycle-list',
-      { attrs: { listData: this.listData, templateKey: 'type', alias: 'item' } },
+      { appendAsTree: true, attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item' } },
       [
         h('cell-slot', { attrs: { templateType: 'A' } }, [
           h('text', { attrs: { value: ['name: ', { '@binding': 'item.name' }] } }),
