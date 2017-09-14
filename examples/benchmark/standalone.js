@@ -195,9 +195,10 @@ function createListData (count) {
   var array = []
   var candidates = [lineData, floorData, appListData]
   while (count--) {
-    var chosenType = candidates[Math.floor(Math.random() * candidates.length)]
-    var i = Math.floor(Math.random() * chosenType.length)
-    array.push(chosenType[i])
+    candidates.forEach(dataType => {
+      var i = Math.floor(Math.random() * dataType.length)
+      array.push(dataType[i])
+    })
   }
   return array
 }
@@ -207,7 +208,7 @@ new Vue({
   components: { line: Line, floor :Floor, appList: AppList },
   data: function () {
     return {
-      listData: createListData(200)
+      listData: createListData(80)
     }
   },
   render: function (h) {
