@@ -51,7 +51,7 @@ var floorStyles = {
 var Floor = {
   props: ['floor'],
   render: function (h) {
-    return h('div', { style: { backgroundColor: '#FFFFFF', marginBottom: 15 } }, [
+    return h('div', { attrs: { floor: this.floor }, style: { backgroundColor: '#FFFFFF', marginBottom: 15 } }, [
       h('text', { style: floorStyles.title, attrs: { value: { '@binding': 'floor.title' } } }),
       h('text', { style: floorStyles.desc, attrs: { value: { '@binding': 'floor.desc' }, lines: 2 } }),
       h('div', { style: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 } }, [
@@ -151,7 +151,7 @@ var appListStyle = {
 var AppList = {
   props: ['apps'],
   render: function (h) {
-    return h('div', { style: { flexDirection: 'row' } }, [
+    return h('div', { attrs: { apps: this.apps }, style: { flexDirection: 'row' } }, [
       h('div', {
         style: appListStyle.box,
         attrs: {
@@ -174,16 +174,16 @@ var appListData = [
     type: 'app-list',
     apps: [
       {
-        title: '腔调掌柜',
+        title: 'AAAA',
         icon: 'http://img.alicdn.com/tfs/TB1sWLoRVXXXXbdXXXXXXXXXXXX-140-140.png',
       }, {
-        title: '腔调掌柜',
+        title: 'BBBB',
         icon: 'http://gw.alicdn.com/tfs/TB10.R_SpXXXXbtXXXXXXXXXXXX-140-140.png',
       }, {
-        title: '腔调掌柜',
+        title: 'CCCC',
         icon: 'http://img.alicdn.com/tfs/TB1fRVASpXXXXXdXXXXXXXXXXXX-140-140.png',
       }, {
-        title: '腔调掌柜',
+        title: 'DDDD',
         icon: 'http://img.alicdn.com/tfs/TB1_TkdPVXXXXcJXXXXXXXXXXXX-140-140.png',
       }
     ]
@@ -211,7 +211,7 @@ new Vue({
     }
   },
   render: function (h) {
-    return h('recycle-list', {
+    return h('div', {}, [h('recycle-list', {
         appendAsTree: true,
         style: { backgroundColor: '#F5F5F5' },
         attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item', index: 'index' }
@@ -227,7 +227,7 @@ new Vue({
         h('cell-slot', { attrs: { templateType: 'app-list' } }, [
           h('app-list', { attrs: { scope: "apps", apps: { '@binding': 'item.apps' } } })
         ])
-      ]
-    )
+      ])
+    ])
   }
 })
