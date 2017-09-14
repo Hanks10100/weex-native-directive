@@ -34,6 +34,8 @@
 + `<recycle-list>`: 可复用节点的列表，只有该组件才支持当前的优化方案。
   + `list-data`: 数组格式的列表数据。
   + `template-key`: 数据中用于区分子模板类型的字段名，默认值是 `"templateType"`。
+  + `alias`: 指定数据中每一条数据在模板中的别名。
+  + `index`: 指定当前列表下标的变量名。
 + `<cell-slot>`: 节点模板。
   + `template-type`: 当前模板的类型，只有和数据中的类型匹配才会渲染。
   + `key`: 列表中每条数据的唯一键值，用于优化。
@@ -46,8 +48,6 @@
 
 + **指令** 用于声明客户端的解释方式，与渲染行为有关。格式为 `[[directive]]`。
 + **绑定** 用于声明数据的取值方式，与渲染内容有关。格式为 `{ "@binding": expression }`。
-
-> 目前仅考虑支持直接使用属性名作为 expression。
 
 ### 属性值绑定
 
@@ -176,11 +176,14 @@
 callJS({
   method: 'fireEvent',
 
-  // 传递给事件处理函数的参数
-  params: [25, 'static', 'Tom'],
-
   // 传递给 jsfm 中 fireEvent 方法的参数
-  args: [instanceId, element, type, ...]
+  args: [
+    // 旧的参数格式不变
+    instanceId, element, type, event, domChange,
+
+    // 传递给事件处理函数的参数，放在 fireEvent 参数列表的最后边
+    [25, 'static', 'Tom']
+  ]
 })
 ```
 

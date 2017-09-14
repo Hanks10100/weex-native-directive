@@ -48,6 +48,7 @@ function compileAndExecute (template, additional = '') {
       <cell-slot>${template}</cell-slot>
     </recycle-list>`
   )
+  // console.log(render)
   return execute(`
     // { "framework": "Vue" }
     Vue.config.silent = true
@@ -79,11 +80,11 @@ describe('Compiler', () => {
 
 describe('Vue examples', () => {
   it('binding text node', createTestSuit('basic/text'))
+  it('binding attributes', createTestSuit('basic/attrs'))
 })
 
 describe.skip('Pending examples', () => {
 
-  it('binding attributes', createTestSuit('basic/attrs'))
   it('v-bind', createTestSuit('basic/v-bind'))
   it('v-if', createTestSuit('basic/v-if'))
   it('v-else', createTestSuit('basic/v-else'))
