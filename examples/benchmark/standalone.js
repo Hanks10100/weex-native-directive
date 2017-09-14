@@ -222,10 +222,10 @@ new Vue({
           ])
         ]),
         h('cell-slot', { attrs: { templateType: 'floor' } }, [
-          h('floor', { attrs: { floor: { '@binding': 'item', '@alias': 'floor' } } })
+          h('floor', { attrs: { scope: "floor", floor: { '@binding': 'item' } } })
         ]),
         h('cell-slot', { attrs: { templateType: 'app-list' } }, [
-          h('app-list', { attrs: { apps: { '@binding': 'item.apps', '@alias': 'apps' } } })
+          h('app-list', { attrs: { scope: "apps", apps: { '@binding': 'item.apps' } } })
         ])
       ]
     )
