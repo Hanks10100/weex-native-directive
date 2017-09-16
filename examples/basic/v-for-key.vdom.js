@@ -6,12 +6,14 @@
         '[[repeat]]': {
           '@expression': 'group',
           '@index': 'index',
-          '@label': 'item'
+          '@alias': 'item'
         },
         append: 'tree',
-        key: {
-          '@binding': 'index'
-        }
+
+        // need discuss
+        // key: {
+        //   '@binding': 'index'
+        // }
       },
       children: [{
         type: 'text',

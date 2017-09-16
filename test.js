@@ -81,15 +81,16 @@ describe('Compiler', () => {
 describe('Vue examples', () => {
   it('binding text node', createTestSuit('basic/text'))
   it('binding attributes', createTestSuit('basic/attrs'))
+  it('v-bind', createTestSuit('basic/v-bind'))
+  it('v-if', createTestSuit('basic/v-if'))
+  it('v-for', createTestSuit('basic/v-for'))
+  it('v-for with iterator', createTestSuit('basic/v-for-iterator'))
+  it('v-for with iterator and key', createTestSuit('basic/v-for-key'))
 })
 
 describe.skip('Pending examples', () => {
 
-  it('v-bind', createTestSuit('basic/v-bind'))
-  it('v-if', createTestSuit('basic/v-if'))
   it('v-else', createTestSuit('basic/v-else'))
-  it('v-for', createTestSuit('basic/v-for'))
-  it('v-for with key', createTestSuit('basic/v-for-key'))
 
   it('v-on', done => {
     const source = readFile(`basic/v-on.vue`)

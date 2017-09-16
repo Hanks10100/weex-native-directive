@@ -5,7 +5,7 @@
       attr: {
         '[[repeat]]': {
           '@expression': 'list',
-          '@label': 'item'
+          '@alias': 'item'
         },
         value: {
           '@binding': 'item.label'
