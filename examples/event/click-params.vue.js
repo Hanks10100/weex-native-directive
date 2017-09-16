@@ -30,6 +30,12 @@ new Vue({
   methods: {
     inc (i) {
       this.listData[i].count++
+    },
+    show () {
+      console.log(' => appear')
+    },
+    hide () {
+      console.log(' => disappear ' + i)
     }
   },
   render: function (h) {
@@ -42,7 +48,11 @@ new Vue({
             h('text', { class: ['output'], attrs: { value: { '@binding': 'item.count' } } }),
             h('text', {
               class: ['btn'], attrs: { value: '+' },
-              on: { click: { handler: this.inc, params: [{ '@binding': 'i' }] } }
+              on: {
+                click: { handler: this.inc, params: [{ '@binding': 'i' }] },
+                appear: this.show,
+                disappear: { handler: this.hide, params: [{ '@binding': 'index' }] }
+              }
             })
           ])
         ])

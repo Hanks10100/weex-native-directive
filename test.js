@@ -86,12 +86,6 @@ describe('Vue examples', () => {
   it('v-for', createTestSuit('basic/v-for'))
   it('v-for with iterator', createTestSuit('basic/v-for-iterator'))
   it('v-for with iterator and key', createTestSuit('basic/v-for-key'))
-})
-
-describe.skip('Pending examples', () => {
-
-  it('v-else', createTestSuit('basic/v-else'))
-
   it('v-on', done => {
     const source = readFile(`basic/v-on.vue`)
     const target = readFile(`basic/v-on.vdom.js`)
@@ -105,7 +99,11 @@ describe.skip('Pending examples', () => {
       done()
     }).catch(done)
   })
+})
 
+describe.skip('Pending examples', () => {
+
+  it('v-else', createTestSuit('basic/v-else'))
   it('event handler', done => {
     const source = readFile(`basic/event-handler.vue`)
     const target = readFile(`basic/event-handler.vdom.js`)
