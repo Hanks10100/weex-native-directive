@@ -15,6 +15,10 @@ var Line = {
       },
       attrs: {
         '@isComponentRoot': true,
+        '@componentProps': {
+          name: this.name,
+          kind: this.kind
+        },
         value: [{ '@binding': 'name' }, ' (', { '@binding': 'kind' }, ')']
       }
     })
@@ -52,7 +56,13 @@ var floorStyles = {
 var Floor = {
   props: ['floor'],
   render: function (h) {
-    return h('div', { attrs: { '@isComponentRoot': true, floor: this.floor }, style: { backgroundColor: '#FFFFFF', marginBottom: 15 } }, [
+    return h('div', {
+      attrs: {
+        '@isComponentRoot': true,
+        '@componentProps': { floor: this.floor }
+      },
+      style: { backgroundColor: '#FFFFFF', marginBottom: 15 }
+    }, [
       h('text', { style: floorStyles.title, attrs: { value: { '@binding': 'floor.title' } } }),
       h('text', { style: floorStyles.desc, attrs: { value: { '@binding': 'floor.desc' }, lines: 2 } }),
       h('div', { style: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 } }, [
@@ -152,7 +162,13 @@ var appListStyle = {
 var AppList = {
   props: ['apps'],
   render: function (h) {
-    return h('div', { attrs: { '@isComponentRoot': true, apps: this.apps }, style: { flexDirection: 'row' } }, [
+    return h('div', {
+      attrs: {
+        '@isComponentRoot': true,
+        '@componentProps': { apps: this.apps }
+      },
+      style: { flexDirection: 'row' }
+  }, [
       h('div', {
         style: appListStyle.box,
         attrs: {
