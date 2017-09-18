@@ -116,7 +116,7 @@ sendTasks(id, [{
                   "[[repeat]]": {
                     "@expression": "dataset",
                     "@index": "i",
-                    "@label": "item"
+                    "@alias": "item"
                   }
                 },
                 "children": [{
@@ -134,7 +134,7 @@ sendTasks(id, [{
                 }]
             }]
           },
-          
+
           // <cell-slot> C
           {
             "ref": uniqueId(),

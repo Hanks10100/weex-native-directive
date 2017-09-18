@@ -72,7 +72,7 @@ var Floor = {
             '[[repeat]]': {
               '@expression': 'floor.pictures',
               '@index': 'i',
-              '@label': 'src',
+              '@alias': 'src',
             },
             key: { '@binding': 'i' },
             src: { '@binding': 'src' },
@@ -175,7 +175,7 @@ var AppList = {
           '[[repeat]]': {
             '@expression': 'apps',
             '@index': 'i',
-            '@label': 'app'
+            '@alias': 'app'
           },
           key: { '@binding': 'i' }
         },

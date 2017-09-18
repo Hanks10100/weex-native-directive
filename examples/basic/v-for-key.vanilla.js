@@ -6,7 +6,7 @@ const uniqueId = (function(){
 })()
 
 function sendNode (listData, vdom) {
-  const send = typeof id === 'undefined' 
+  const send = typeof id === 'undefined'
     ? task => sendTasks([task], -1)
     : task => sendTasks(id, [task], -1)
 
@@ -46,7 +46,7 @@ sendNode(listData, {
         '[[repeat]]': {
           '@expression': 'group',
           '@index': 'index',
-          '@label': 'item'
+          '@alias': 'item'
         },
         append: 'tree',
         key: {
