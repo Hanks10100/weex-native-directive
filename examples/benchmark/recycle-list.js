@@ -14,6 +14,7 @@ var Line = {
         marginBottom: 10,
       },
       attrs: {
+        '@isComponetRoot': true,
         value: [{ '@binding': 'name' }, ' (', { '@binding': 'kind' }, ')']
       }
     })
@@ -51,7 +52,7 @@ var floorStyles = {
 var Floor = {
   props: ['floor'],
   render: function (h) {
-    return h('div', { attrs: { floor: this.floor }, style: { backgroundColor: '#FFFFFF', marginBottom: 15 } }, [
+    return h('div', { attrs: { '@isComponetRoot': true, floor: this.floor }, style: { backgroundColor: '#FFFFFF', marginBottom: 15 } }, [
       h('text', { style: floorStyles.title, attrs: { value: { '@binding': 'floor.title' } } }),
       h('text', { style: floorStyles.desc, attrs: { value: { '@binding': 'floor.desc' }, lines: 2 } }),
       h('div', { style: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 } }, [
@@ -151,7 +152,7 @@ var appListStyle = {
 var AppList = {
   props: ['apps'],
   render: function (h) {
-    return h('div', { attrs: { apps: this.apps }, style: { flexDirection: 'row' } }, [
+    return h('div', { attrs: { '@isComponetRoot': true, apps: this.apps }, style: { flexDirection: 'row' } }, [
       h('div', {
         style: appListStyle.box,
         attrs: {
@@ -223,10 +224,10 @@ new Vue({
           ])
         ]),
         h('cell-slot', { attrs: { templateType: 'floor' } }, [
-          h('floor', { attrs: { scope: "floor", floor: { '@binding': 'item' } } })
+          h('floor', { attrs: { floor: { '@binding': 'item' } } })
         ]),
         h('cell-slot', { attrs: { templateType: 'app-list' } }, [
-          h('app-list', { attrs: { scope: "apps", apps: { '@binding': 'item.apps' } } })
+          h('app-list', { attrs: { apps: { '@binding': 'item.apps' } } })
         ])
       ])
     ])
