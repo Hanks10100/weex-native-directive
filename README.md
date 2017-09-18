@@ -245,8 +245,8 @@ handlerB(25, 'static', 'Tom', event)
   attr: {
     '[[repeat]]': {
       '@expression': 'dataList',
-      '@index': 'index',
-      '@label': 'item'
+      '@alias': 'item',
+      '@index': 'index'
     }
   }
 }
@@ -257,8 +257,9 @@ handlerB(25, 'static', 'Tom', event)
 > 指令名和字段名都还待定。
 
 + `@expression`: 将要被循环展开的数据字段名。
-+ `@index`: 下标或者数据键名。
-+ `@label`: 数据循环展开后，每一条数据的名称。
++ `@alias`: 数据循环展开后，每一条数据的名称。
++ `@index`: 表示数据下标的字段名。
++ `@key`: 当 @expression 指定的数据是个对象的时候，@key 表示对象的属性名。
 
 这三个字段指定的都是数据中的属性名，如果数据中的名称有冲突，以当前作用域（最内层）的值为准。
 
@@ -293,7 +294,7 @@ dataset.panels.map((item, i) => {
     '[[repeat]]': {
       '@expression': 'dataset.panels',
       '@index': 'i',
-      '@label': 'item'
+      '@alias': 'item'
     }
   },
   children: [{
@@ -362,15 +363,15 @@ dataset.panels.map((item, i) => {
 |   | directive |       Vue     |           Rax             |  Android  |      iOS      |
 | - | --------- | ------------- | ------------------------- | -         | -             |
 |   | -         | beforeCreate  | constructor               | ------    | -             |
-| v | create    | created       | -                         | onMeasure | -             |
-| v | create    | beforeMount   | componentWillMount        | onDraw    | loadView      |
-| v | attach    | mounted       | componentDidMount         | attached  | viewDidLoad   |
+| x | create    | created       | -                         | onMeasure | -             |
+| x | create    | beforeMount   | componentWillMount        | onDraw    | loadView      |
+| x | attach    | mounted       | componentDidMount         | attached  | viewDidLoad   |
 |   | -         | -             | componentWillReceiveProps | -         | -             |
 |   | -         | -             | shouldComponentUpdate     | -         | -             |
-|   | -         | beforeUpdate  | componentWillUpdate       | -         | -             |
-| v | update    | updated       | componentDidUpdate        | -         | -             |
-| v | detach    | beforeDestroy | componentWillUnmount      | detached  | viewDidUnload |
-| v | detach    | destroyed     | -                         | -         | -             |
+| x | update    | beforeUpdate  | componentWillUpdate       | -         | -             |
+| x | update    | updated       | componentDidUpdate        | -         | -             |
+| x | detach    | beforeDestroy | componentWillUnmount      | detached  | viewDidUnload |
+| x | detach    | destroyed     | -                         | -         | -             |
 
 > Android 和 iOS 组件的生命周期未列全。
 

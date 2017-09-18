@@ -29,7 +29,12 @@ const Counter = {
     }
   },
   render: function (h) {
-    h('div', {}, [
+    h('div', {
+      attrs: {
+        '@isComponentRoot': true,
+        '@componentProps': { start: this.start }
+      }
+    }, [
       h('text', { class: ['output'], attrs: { value: { '@binding': 'count' } } }),
       h('text', {
         class: ['btn'], attrs: { value: '+' },

@@ -1,14 +1,22 @@
 // { "framework": "Vue" }
 
 var listData = [
-  { type: 'A', name: 'Tom', kind: 'cat' },
-  { type: 'A', name: 'Jerry', kind: 'mouse' }
+  { type: 'A', title: 'Tom' },
+  { type: 'A', title: 'Jerry' }
 ]
 
 var Child = {
-  props: ['kind'],
+  props: ['title'],
   render: function (h) {
-    return h('text', {}, '(' + this.kind + ')')
+    return h('text', {
+      attrs: {
+        '@isComponentRoot': true,
+        '@componentProps': {
+          title: this.title
+        },
+        value: ['[------- ', { '@binding': 'title' }, ' -------]']
+      }
+    })
   }
 }
 
@@ -21,16 +29,12 @@ new Vue({
     }
   },
   render: function (h) {
-    return h('recycle-list',
-      { appendAsTree: true, attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item' } },
-      [
-        h('cell-slot', { attrs: { templateType: 'A' } }, [
-          h('text', { attrs: { value: ['name: ', { '@binding': 'item.name' }] } }),
+    return h('recycle-list', { appendAsTree: true, attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item' } }, [
+      h('cell-slot', { attrs: { templateType: 'A' } }, [
 
-          // using the child component
-          h('child', { attrs: { kind: { '@binding': 'item.kind' } } })
-        ])
-      ]
-    )
+        // using the banner component
+        h('banner', { attrs: { kind: { '@binding': 'item.title' } } })
+      ])
+    ])
   }
 })
