@@ -28,20 +28,21 @@ new Vue({
     }
   },
   methods: {
-    inc (i) {
+    inc: function (i) {
+      console.log(' => click ' + i)
       this.listData[i].count++
     },
-    show () {
+    show: function () {
       console.log(' => appear')
     },
-    hide () {
+    hide: function () {
       console.log(' => disappear ' + i)
     }
   },
   render: function (h) {
     return h('div', {}, [h('recycle-list', {
         appendAsTree: true,
-        attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item', index: "i" }
+        attrs: { listData: this.listData, templateKey: 'type', alias: 'item', index: "i" }
       }, [
         h('cell-slot', { attrs: { templateType: 'A' } }, [
           h('div', {}, [

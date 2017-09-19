@@ -63,7 +63,7 @@ new Vue({
   render: function (h) {
     return h('div', {}, [h('recycle-list', {
         appendAsTree: true,
-        attrs: { append: "tree", listData: this.listData, templateKey: 'type', alias: 'item', index: "i" }
+        attrs: { listData: this.listData, templateKey: 'type', alias: 'item', index: "i" }
       }, [
         h('cell-slot', { attrs: { templateType: 'A' } }, [
           h('div', {}, [
