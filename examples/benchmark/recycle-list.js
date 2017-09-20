@@ -121,7 +121,6 @@ var TabHeader = {
     }
   },
   render: function (h) {
-    console.log(' => create tab header')
     return h('div', {
       staticClass: ["tab-list"],
       attrs: { '@isComponentRoot': true, '@componentProps': { tabs: this.tabs } }
@@ -199,6 +198,93 @@ var AppList = {
       }, [
         h('image', { style: appListStyle.icon, attrs: { src: { '@binding': 'app.icon' } } }),
         h('text', { style: appListStyle.title, attrs: { value: { '@binding': 'app.title' } } })
+      ])
+    ])
+  }
+}
+
+var Card = {
+  props: ['card', 'index'],
+  data: function () {
+    return {
+      count: { '@binding': 'parseInt(card.got, 10)' }
+    }
+  },
+  style: {
+    "row": { "flexDirection": "row" },
+    "card": { "width": 710, "marginTop": 20, "marginLeft": 20, "backgroundColor": "#FFFFFF", "borderRadius": 10 },
+    "banner": { "width": 222, "height": 60 },
+    "side": { "paddingTop": 20, "paddingRight": 20, "paddingBottom": 20, "paddingLeft": 20 },
+    "poster": { "width": 230, "height": 230, "marginRight": 20 },
+    "title": { "fontSize": 26, "color": "#666666", "marginTop": 10, "paddingBottom": 6 },
+    "line": { "alignItems": "center", "paddingTop": 5, "paddingBottom": 5 },
+    "icon": { "width": 36, "height": 36, "marginRight": 8 },
+    "subtitle": { "fontSize": 28, "color": "#07152a" },
+    "progress": { "flexDirection": "row", "alignItems": "center", "width": 230, "height": 30, "backgroundColor": "#FEC1C1", "borderRadius": 20, "marginTop": 10, "marginBottom": 10 },
+    "progress-inner": { "position": "absolute", "height": 30, "left": 0, "borderRadius": 20, "backgroundColor": "#ff3c32" },
+    "got": { "position": "absolute", "left": 8, "lineHeight": 30, "color": "#FFFFFF", "fontSize": 22 },
+    "remain": { "position": "absolute", "right": 8, "lineHeight": 30, "color": "#FFFFFF", "fontSize": 22 },
+    "info": { "width": 400, "flexDirection": "row", "alignItems": "flex-end" },
+    "price": { "fontSize": 52, "color": "#ff3c32", "marginBottom": -10, "marginTop": 10, "marginRight": 8 },
+    "fake-price": { "fontSize": 28, "color": "#999999", "textDecoration": "line-through" },
+    "btn": { "position": "absolute", "right": 0, "bottom": 0, "backgroundColor": "#ff5d62", "borderRadius": 8, "width": 125, "height": 52, "justifyContent": "center" },
+    "btn-text": { "color": "#FFFFFF", "fontSize": 32, "textAlign": "center" }
+  },
+  render: function (h) {
+    return h('div', {
+      staticClass: ["card"],
+      attrs: {
+        '@isComponentRoot': true, '@componentProps': { card: this.card },
+        '[[lifecycle]]': {
+          '@create': function () {
+            console.log(' => create Card component')
+            var self = this
+            setInterval(function () {
+              self.count++
+            }, 80)
+          }
+        }
+      },
+      on: {
+        "appear":{
+          handler: function (i, $event) {
+            modal.toast({ message: 'appear ' + i })
+          },
+          params: [{ '@binding': 'index' }]
+        }
+      }
+    }, [
+      h('div', { staticStyle: { height: 60, paddingLeft: 30 } }, [
+        h('image', { staticClass: ["banner"], attrs: { "src": "https://img.alicdn.com/tfs/TB1moeURFXXXXasXXXXXXXXXXXX-390-105.png" } })
+      ]),
+      h('div', { staticClass: ["row"], staticStyle: { paddingBottom: "18px" } }, [
+        h('div', { staticClass: ["side"] }, [
+          h('image', { staticClass: ["poster"], attrs: { "src": { '@binding': 'card.poster' } } })
+        ]),
+        h('div', { staticClass: ["message"] }, [
+          h('text', { staticClass: ["title"], attrs: { value: { '@binding': 'card.title' } } }),
+          h('div', { staticClass: ["line", "row"] }, [
+            h('image', { staticClass: ["icon"], attrs: { "src": "//ossgw.alicdn.com/img/upload/0a4946e164acd1f81e97ddbc048afcc5/Group13-69-69.png@22w_22h_80Q.png" } }),
+            h('text', { staticClass: ["subtitle"], attrs: { value: { '@binding': 'card.subtitle1' } } })
+          ]),
+          h('div', { staticClass: ["line", "row"] }, [
+            h('image', { staticClass: ["icon"], attrs: { "src": "//ossgw.alicdn.com/img/upload/0a4946e164acd1f81e97ddbc048afcc5/Group13-69-69.png@22w_22h_80Q.png" } }),
+            h('text', { staticClass: ["subtitle"], attrs: { value: { '@binding': 'card.subtitle2' } } })
+          ]),
+          h('div', { staticClass: ["progress", "row"] }, [
+            h('div', { staticClass: ["progress-inner"], style: { width: { '@binding': 'card.progress * 230 / 100' } } }),
+            h('text', { staticClass: ["got"], attrs: { value: '已抢' + this.count + '件' } }),
+            // h('text', { staticClass: ["got"], attrs: { value: ['已抢', { '@binding': 'card.got' }, '件'] } }),
+            h('text', { staticClass: ["remain"], attrs: { value: [{ '@binding': 'card.progress' }, '%'] } })
+          ]),
+          h('div', { staticClass: ["info", "row"] }, [
+            h('text', { staticClass: ["price"], attrs: { value: ['¥', { '@binding': 'card.price.real' }] } }),
+            h('text', { staticClass: ["fake-price"], attrs: { value: ['¥', { '@binding': 'card.price.fake' }] } }),
+            h('div', { staticClass: ["btn"] }, [
+              h('text', { staticClass: ["btn-text"], attrs: { value: '马上抢' } })
+            ])
+          ])
+        ])
       ])
     ])
   }
@@ -298,6 +384,45 @@ var dataset = {
       ],
       count: 36,
     }
+  ],
+  card: [
+    {
+      type: 'card',
+      poster: 'http://gw.alicdn.com/tps/i4/1611893164/TB2t4mtXJqUQKJjSZFIXXcOkFXa_!!0-juitemmedia.jpg_320x320q80s150.jpg',
+      title: '澳洲牛排10份装送刀叉酱料黄油',
+      subtitle1: '送平底锅前3000仅78',
+      subtitle2: '私厨经典 镇店套餐',
+      got: 173,
+      progress: 35,
+      price: {
+        real: 108,
+        fake: 240.00
+      }
+    }, {
+      type: 'card',
+      poster: 'http://gw.alicdn.com/tps/i2/2838892713/TB2ma39aqmgSKJjSsphXXcy1VXa_!!0-juitemmedia.jpg_320x320q80s150.jpg',
+      title: 'HUAWEI P10',
+      subtitle1: '买赠好礼6期免息',
+      subtitle2: '6期免息',
+      got: 996,
+      progress: 89,
+      price: {
+        real: 3488,
+        fake: 3488.00
+      }
+    }, {
+      type: 'card',
+      poster: 'http://gw.alicdn.com/tps/i3/902257410/TB2pzypfU3IL1JjSZFMXXajrFXa_!!0-juitemmedia.jpg_320x320q80s150.jpg',
+      title: '海宁真皮皮衣男绵羊皮夹克外套',
+      subtitle1: '店内领券下单438',
+      subtitle2: '限送500双皮手套',
+      got: 296,
+      progress: 16,
+      price: {
+        real: 538,
+        fake: 3080.00
+      }
+    }
   ]
 }
 
@@ -315,20 +440,16 @@ function createListData (order) {
   return array
 }
 
-var order = 'tab,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
-  + ',A,apps,apps,A,floor,floor,floor,floor'
+// var order = 'tab,apps,card'
+var order = 'tab,apps,apps,A,card,A,floor,floor'
+  + ',tab,apps,apps,A,card,A,floor,floor'
+  + ',tab,apps,apps,A,card,A,floor,floor'
+  + ',tab,apps,apps,A,card,A,floor,floor'
+  + ',tab,apps,apps,A,card,A,floor,floor'
 
 new Vue({
   el: 'body',
-  components: { line: Line, floor :Floor, 'tab-header': TabHeader, appList: AppList },
+  components: { line: Line, floor: Floor, card: Card, 'tab-header': TabHeader, appList: AppList },
   data: function () {
     return { listData: createListData(order) }
   },
@@ -348,6 +469,9 @@ new Vue({
         ]),
         h('cell-slot', { attrs: { templateType: 'floor' } }, [
           h('floor', { attrs: { floor: { '@binding': 'item' } } })
+        ]),
+        h('cell-slot', { attrs: { templateType: 'card' } }, [
+          h('card', { attrs: { card: { '@binding': 'item' }, index: { '@binding': 'index' } } })
         ]),
         h('cell-slot', { attrs: { templateType: 'apps' } }, [
           h('app-list', { attrs: { apps: { '@binding': 'item.apps' } } })
