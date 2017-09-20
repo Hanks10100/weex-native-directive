@@ -223,7 +223,7 @@ var dataset = {
 function createListData (order) {
   var array = []
   var list = order.split(/[\s,]+/)
-  for (var i = 0; i < list; ++i) {
+  for (var i = 0; i < list.length; ++i) {
     var candidates = dataset[list[i]]
     if (candidates) {
       var idx = Math.floor(Math.random() * candidates.length)
