@@ -1,5 +1,7 @@
 // { "framework": "Vue" }
 
+var modal = weex.requireModule('modal')
+
 // 单行文字的例子 http://dotwe.org/vue/9b230114121d479fad28c0eb18726acf
 var Line = {
   props: ['name', 'kind'],
@@ -55,7 +57,16 @@ var Floor = {
     return h('div', {
       attrs: {
         '@isComponentRoot': true,
-        '@componentProps': { floor: this.floor }
+        '@componentProps': { floor: this.floor },
+        '[[lifecycle]]': {
+          '@create': function () {
+            console.log(' => create floor component')
+          },
+          '@attach': function () {
+            console.log(' => attach floor component')
+            modal.toast({ message: 'attach floor component' })
+          }
+        }
       },
       style: { backgroundColor: '#FFFFFF', marginBottom: 15 }
     }, [
