@@ -91,6 +91,69 @@ var Floor = {
   }
 }
 
+// 页签 http://dotwe.org/vue/940c4b11fdecd090b182c94074ab1e74
+var TabHeader = {
+  props: ['tabs'],
+  data: function () {
+    return { activeTab: 0 }
+  },
+  methods: {
+    select: function (index) {
+      this.activeTab = index
+    }
+  },
+  style: {
+    "tab-list": {
+      "flexDirection": "row",
+      "backgroundColor": "#f51438"
+    },
+    "active": {
+      "backgroundColor": "#e00022"
+    },
+    "icon": {
+      "width": 45,
+      "height": 45
+    },
+    "title": {
+      "fontSize": 28,
+      "color": "#FFFFFF",
+      "marginTop": 10
+    }
+  },
+  render: function (h) {
+    console.log(' => create tab header')
+    return h('div', {
+      staticClass: ["tab-list"],
+      attrs: { '@isComponentRoot': true, '@componentProps': { tabs: this.tabs } }
+    }, [
+      h('div', {
+        class: [{ '@binding': this.activeTab + " == i ? 'active' : ''" }],
+        style: { "height": 120, "width": 150, "justifyContent": "center", "alignItems": "center" },
+        attrs: {
+          '[[repeat]]': {
+            '@expression': 'tabs',
+            '@alias': 'tab',
+            '@index': 'i'
+          },
+          key: { '@binding': 'i' },
+        },
+        on: {
+          click: {
+              handler: function(i, $event) {
+                this.select(i)
+              },
+              params: [{ '@binding': 'i' }]
+            }
+          }
+        }, [
+          h('image', { staticClass: ["icon"], attrs: { src: { '@binding': 'tab.icon' } } }),
+          h('text', { staticClass: ["title"], attrs: { value: { '@binding': 'tab.title' } } })
+        ]
+      )
+    ])
+  }
+}
+
 // 某种应用列表展示 http://dotwe.org/vue/4fcf51377cea77dfa355594669bde7f7
 var appListStyle = {
   box: {
@@ -164,6 +227,25 @@ var dataset = {
       }
     ]
   }],
+  tab: [{
+    type: 'tab',
+    tabs: [{
+      title: '首页',
+      icon: '//gw.alicdn.com/tfs/TB19YESOVXXXXaNaXXXXXXXXXXX-45-45.png'
+    }, {
+      title: '耍帅',
+      icon: '//gw.alicdn.com/tfs/TB1I2E9OVXXXXbFXVXXXXXXXXXX-45-45.png'
+    }, {
+      title: '旅行',
+      icon: '//gw.alicdn.com/tfs/TB1gUhyPXXXXXX5XXXXXXXXXXXX-45-45.png'
+    }, {
+      title: '潮玩',
+      icon: '//img.alicdn.com/tfs/TB1D4RzQFXXXXcoXpXXXXXXXXXX-45-45.png'
+    }, {
+      title: '穿搭',
+      icon: '//gw.alicdn.com/tfs/TB1N1.6OVXXXXXqaXXXXXXXXXXX-45-45.png'
+    }]
+  }],
   floor: [
     {
       type: 'floor',
@@ -233,7 +315,7 @@ function createListData (order) {
   return array
 }
 
-var order = 'A,apps,apps,A,floor,floor,floor,floor'
+var order = 'tab,apps,apps,A,floor,floor,floor,floor'
   + ',A,apps,apps,A,floor,floor,floor,floor'
   + ',A,apps,apps,A,floor,floor,floor,floor'
   + ',A,apps,apps,A,floor,floor,floor,floor'
@@ -246,7 +328,7 @@ var order = 'A,apps,apps,A,floor,floor,floor,floor'
 
 new Vue({
   el: 'body',
-  components: { line: Line, floor :Floor, appList: AppList },
+  components: { line: Line, floor :Floor, 'tab-header': TabHeader, appList: AppList },
   data: function () {
     return { listData: createListData(order) }
   },
@@ -260,6 +342,9 @@ new Vue({
           h('div', { style: { backgroundColor: '#EEEEEE' } }, [
             h('line', { attrs: { name: { '@binding': 'item.name' }, kind: { '@binding': 'item.kind' } } })
           ])
+        ]),
+        h('cell-slot', { attrs: { templateType: 'tab' } }, [
+          h('tab-header', { attrs: { tabs: { '@binding': 'item.tabs' } } })
         ]),
         h('cell-slot', { attrs: { templateType: 'floor' } }, [
           h('floor', { attrs: { floor: { '@binding': 'item' } } })
