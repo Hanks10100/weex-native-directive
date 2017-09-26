@@ -89,3 +89,18 @@ Vue.component('banner', {
 + `beforeCreate` 和 `created` 生命周期将在模板发送到客户端以后，节点开始渲染之前，一次性全部触发。
 + `mounted` 生命周期将会延迟触发，因为列表中的节点是重复利用的，只有（即将）滚动到该节点的时候才会触发其 `mounted` 生命周期，而且此时节点是复用了之前的模板，并没有重新创建、挂载，只是模板中的数据更新了。
 + `beforeDestroy` 和  `destroyed` 生命周期将在 `<recycle-list>` 组件销毁时批量触发。
+
+## Virtual Component
+
++ 客户端遇到带有 @isComponentRoot 的组件，先向 js 发一个回调，然后 js 开始创建 Virtual Component，执行构造函数和 created 生命周期。
+  + 如何通知 js 创建 Virtual Component ？
+    + 不由 native 通知，而是由 js 自己根据数据的条数创建相应的 Virtual Component。
+    + 可以试着修改 @render 里的 createComponent 方法，使其支持创建 Virtual Component。
+  + 如何和客户端的 Component 对象保持一对一的关系 ？
++ 如果触发了数据改动，则不再触发 render 函数，而是
+
+
++ 编译 `<recycle-list>` 的时候，给子组件挂上 `@inRecycleList` 属性。
++ 对于用在 `<recycle-list>` 中的子组件，编译工具除了生成正常的 `render` 函数以外，还生成特殊的 `@render` 函数。
++ 如果组件含有 `@render` 函数，则认为它是 Virtual Component，不再执行生命周期和 `render` 函数，而是直接执行 `@render` 函数生成模板。
++ 客户端在渲染时……
