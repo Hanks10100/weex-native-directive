@@ -92,14 +92,6 @@ Vue.component('banner', {
 
 ## Virtual Component
 
-+ 客户端遇到带有 @isComponentRoot 的组件，先向 js 发一个回调，然后 js 开始创建 Virtual Component，执行构造函数和 created 生命周期。
-  + 如何通知 js 创建 Virtual Component ？
-    + 不由 native 通知，而是由 js 自己根据数据的条数创建相应的 Virtual Component。
-    + 可以试着修改 @render 里的 createComponent 方法，使其支持创建 Virtual Component。
-  + 如何和客户端的 Component 对象保持一对一的关系 ？
-+ 如果触发了数据改动，则不再触发 render 函数，而是
-
-
 + 编译 `<recycle-list>` 的时候，给子组件挂上 `@inRecycleList` 属性。
 + 对于用在 `<recycle-list>` 中的子组件，编译工具除了生成正常的 `render` 函数以外，还生成特殊的 `@render` 函数。
 + 如果组件含有 `@render` 函数，则认为它是 Virtual Component，不再执行生命周期和 `render` 函数，而是直接执行 `@render` 函数生成模板。
