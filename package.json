@@ -4,7 +4,7 @@
   "description": "Weex Native Directive",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test.js"
+    "test": "mocha test/test.js"
   },
   "license": "Apache-2.0",
   "homepage": "https://github.com/Hanks10100/weex-native-directive#readme",

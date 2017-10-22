@@ -7,7 +7,7 @@
       <text v-else>Small</text>
     </cell-slot>
     <cell-slot template-type="B" class="cell" :key="index">
-      <div v-for="(item, i) in dataset">
+      <div v-for="(item, i) in dataset" :key="i">
         <text>{{banner}}</text>
         <text>{{i}}: {{item.name}}</text>
       </div>

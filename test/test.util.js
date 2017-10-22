@@ -10,7 +10,7 @@ function toFunction (content) {
 }
 
 function readFile (name) {
-  return fs.readFileSync(path.resolve('./examples/', name), 'utf8')
+  return fs.readFileSync(path.resolve(__dirname, name), 'utf8')
 }
 
 function omitUseless (object) {
