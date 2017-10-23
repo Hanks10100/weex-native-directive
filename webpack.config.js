@@ -10,17 +10,18 @@ const bannerPlugin = new webpack.BannerPlugin({
 const entry = {}
 
 // Read all `.vue` files in dir, and add to the entry object
-function walk (dir) {
+const excludePaths = ['build', 'components', 'node_modules']
+function walk (dir, parentFolder = '') {
   const directory = dir || path.join(__dirname, 'examples')
   fs.readdirSync(directory).forEach(file => {
     const filePath = path.join(directory, file)
     const stat = fs.statSync(filePath)
     const extname = path.extname(filePath)
     if (stat.isFile() && extname === '.vue') {
-      const name = path.join('.', path.basename(file, extname))
+      const name = path.join(parentFolder, path.basename(file, extname))
       entry[name] = path.resolve(__dirname, filePath) + '?entry=true'
-    } else if (stat.isDirectory() && file !== 'build') {
-      walk(path.join(directory, file))
+    } else if (stat.isDirectory() && excludePaths.indexOf(file) === -1) {
+      walk(path.join(directory, file), file)
     }
   })
 }

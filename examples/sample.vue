@@ -1,3 +1,5 @@
+<!-- http://dotwe.org/vue/fb7a11d69722f0cb94e9dfa2664d5882 -->
+
 <template>
   <recycle-list :list-data="listData" template-key="type" alias="item" index="cellIndex">
     <cell-slot template-type="static">
@@ -5,7 +7,7 @@
     </cell-slot>
     <cell-slot template-type="dynamic">
       <div class="card">
-        <text class="card-title">{{cellIndex}}: {{item.title}}</text>
+        <text class="card-title">{{cellIndex}}</text>
         <div class="card-body">
           <text class="card-label">{{item.label}}</text>
         </div>
@@ -22,7 +24,6 @@
       }
       return {
         type: 'dynamic',
-        title: type.repeat(3),
         label: type
       }
     })
@@ -54,10 +55,10 @@
   }
   .card-title {
     text-align: center;
-    font-size: 46px;
+    font-size: 40px;
     color: #888;
     background-color: #F5F5F5;
-    padding: 15px;
+    padding: 12px;
     border-bottom-width: 2px;
     border-bottom-style: solid;
     border-bottom-color: #E0E0E0;
