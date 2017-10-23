@@ -2,15 +2,15 @@
   type: 'div',
   event: [{
     type: 'click',
-    args: [{ '@binding': 'index' }]
+    params: [{ '@binding': 'index' }]
   }],
   children: [{
       type: 'text',
       event: [{
         type: 'appear',
-        args: [
+        params: [
           { '@binding': 'index' },
-          'static',
+          "'static'",
           { '@binding': 'type' },
           { '@binding': '$event' }
         ]

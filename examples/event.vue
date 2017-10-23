@@ -5,7 +5,7 @@
     <cell-slot template-type="counter">
       <div class="counter">
         <text class="output">{{cell.count}}</text>
-        <text class="button" @click="inc(i)">+</text>
+        <text class="button" @click="inc(i, 35)">+</text>
       </div>
     </cell-slot>
   </recycle-list>

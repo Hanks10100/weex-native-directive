@@ -33,9 +33,6 @@ describe('Vue examples', () => {
       done()
     }).catch(done)
   })
-})
-
-describe.skip('Pending examples', () => {
   it('event handler', done => {
     const source = readFile(`basic/event-handler.vue`)
     const target = readFile(`basic/event-handler.vdom.js`)
