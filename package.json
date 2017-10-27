@@ -18,7 +18,7 @@
     "webpack": "^3.8.1",
     "weex-js-runtime": "^0.23.0",
     "weex-loader": "^0.6.0-beta.1",
-    "weex-template-compiler": "^2.4.2-bate.2",
+    "weex-template-compiler": "^2.4.2-beta.3",
     "weex-vue-framework": "^2.4.2-weex.3"
   }
 }

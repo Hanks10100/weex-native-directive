@@ -6,7 +6,7 @@ const uniqueId = (function(){
 })()
 
 function sendNode (listData, vdom) {
-  const send = typeof id === 'undefined' 
+  const send = typeof id === 'undefined'
     ? task => sendTasks([task], -1)
     : task => sendTasks(id, [task], -1)
 
@@ -47,12 +47,13 @@ sendNode(listData, {
       ref: uniqueId(),
       type: 'text',
       event: [{
+        type: 'text',
+        event: [{ type: 'disappear' }]
+      }, {
         type: 'appear',
         args: [
           { '@binding': 'index' },
-          'static',
-          { '@binding': 'type' },
-          { '@binding': '$event' }
+          { '@binding': 'type' }
         ]
       }],
       attr: { value: 'Button' }

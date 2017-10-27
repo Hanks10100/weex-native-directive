@@ -5,17 +5,17 @@
     params: [{ '@binding': 'index' }]
   }],
   children: [{
-      type: 'text',
-      event: [{
-        type: 'appear',
-        params: [
-          { '@binding': 'index' },
-          "'static'",
-          { '@binding': 'type' },
-          { '@binding': '$event' }
-        ]
-      }],
-      attr: { value: 'Button' }
-    }
-  ]
+    type: 'text',
+    event: [{ type: 'disappear' }]
+  }, {
+    type: 'text',
+    event: [{
+      type: 'appear',
+      params: [
+        { '@binding': 'index' },
+        { '@binding': 'type' }
+      ]
+    }],
+    attr: { value: 'Button' }
+  }]
 }

@@ -3,7 +3,7 @@
 <template>
   <recycle-list :list-data="counters" template-key="type" alias="cell" index="i">
     <cell-slot template-type="counter">
-      <div class="counter">
+      <div class="counter"  @appear="onappear(index, 'static', type, $event, banana)">
         <text class="output">{{cell.count}}</text>
         <text class="button" @click="inc(i, 35)">+</text>
       </div>
