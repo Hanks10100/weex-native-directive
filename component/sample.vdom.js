@@ -1,23 +1,17 @@
-{
-  type: 'recycle-list',
-  attr: {
-    append: 'tree',
-    templateKey: 'type',
-    alias: 'item'
+({
+  type: 'div',
+  style: { justifyContent: 'center' },
+  attrs: {
+    '@isComponentRoot': true,
+    '@componentProps': {
+      content: { '@binding': 'item.xxx' }
+    }
   },
   children: [{
-    type: 'cell-slot',
-    attr: { templateType: 'A' },
-    children: [{
-      type: 'text',
-      attr: {
-        value: ['name: ', { '@binding': 'item.name' }]
-      }
-    }, {
-      type: 'text',
-      attr: {
-        value: ['(', { '@binding': 'item.kind' }, ')']
-      }
-    }]
+    type: 'text',
+    style: { 'fontSize': 80, 'textAlign': 'center' },
+    attr: {
+      value: { '@binding': 'content' }
+    }
   }]
-}
+})
