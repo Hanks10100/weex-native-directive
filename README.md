@@ -332,49 +332,6 @@ dataset.panels.map((item, i) => {
 }]
 ```
 
-### 生命周期指令
-
-> TODO: 待完善
-
-> 主要是 jsfm 和 native 之间的约定，前端框架改造较小
-
-当模板中包含了子组件的时候，会涉及如何触发子组件生命周期的问题。
-
-```js
-{
-  attr: {
-    '[[lifecycle]]': {
-      '@create': '2333', // 2333 是 callback id
-      '@update': '2334'
-    }
-  }
-}
-```
-
-基于 callback 实现，原生平台在适当的时机会发送一个 js callback。
-
-+ `@create`: 在原生列表元素被创建后触发
-+ `@attach`: 在列表元素添加页面后触发
-+ `@update`: 列表更新后时触发
-+ `@detach`: 列表元素即将销毁时触发
-
-生命周期对应表：
-
-|   | directive |       Vue     |           Rax             |  Android  |      iOS      |
-| - | --------- | ------------- | ------------------------- | -         | -             |
-|   | -         | beforeCreate  | constructor               | ------    | -             |
-| x | create    | created       | -                         | onMeasure | -             |
-| x | create    | beforeMount   | componentWillMount        | onDraw    | loadView      |
-| x | attach    | mounted       | componentDidMount         | attached  | viewDidLoad   |
-|   | -         | -             | componentWillReceiveProps | -         | -             |
-|   | -         | -             | shouldComponentUpdate     | -         | -             |
-| x | update    | beforeUpdate  | componentWillUpdate       | -         | -             |
-| x | update    | updated       | componentDidUpdate        | -         | -             |
-| x | detach    | beforeDestroy | componentWillUnmount      | detached  | viewDidUnload |
-| x | detach    | destroyed     | -                         | -         | -             |
-
-> Android 和 iOS 组件的生命周期未列全。
-
 ## 支持的表达式
 
 上述语法中多次提到 **表达式**（expression），它指明了某个指令所绑定的值，如 `{ '@binding': '(a.count + 3) * 0.8' }` 中 `(a.count + 3) * 0.8` 就是一个表达式。它将在客户端取值时被解析，前端框架里会将模板中绑定的表达式以字符串的格式原样发给客户端，由客户端负责解析。

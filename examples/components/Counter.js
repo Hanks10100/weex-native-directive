@@ -23,7 +23,9 @@ export default {
     }, [
       h('text', {
         staticClass: ["output"],
-        attrs: { value: this.count }
+        attrs: {
+          value: this.count
+        }
       }),
       h('text', {
         staticClass: ["button"],
@@ -46,7 +48,9 @@ export default {
     }, [
       h('text', {
         staticClass: ["output"],
-        attrs: { value: this.count }
+        attrs: {
+          value: { '@binding': 'count' }
+        }
       }),
       h('text', {
         staticClass: ["button"],
