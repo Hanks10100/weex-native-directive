@@ -1,6 +1,6 @@
 <!-- http://dotwe.org/vue/629eedbd923c6e391ab8e928766b0ef2 -->
 
-<template>
+<template recyclable="true">
   <div class="floor">
     <text class="title">{{title}}</text>
     <text class="desc" lines="2">{{desc}}</text>

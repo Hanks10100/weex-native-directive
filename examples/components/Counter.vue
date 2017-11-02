@@ -1,6 +1,6 @@
 <!-- http://dotwe.org/vue/f3f46f5adcb76bd7a408cd369e00d8b7 -->
 
-<template>
+<template recyclable="true">
   <div class="counter">
     <text class="output">{{count}}</text>
     <text class="button" @click="inc">+</text>
