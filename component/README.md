@@ -155,3 +155,24 @@ Virtual Component 是指没有对应的 Virtual DOM、只用于管理内部状�
 
 + `Floor.vue` 和 `Floor.js`: 无状态的静态组件，及其等价 js 代码。
 + `Counter.vue` 和 `Counter.js`: 有状态并且绑定了实际的组件，及其等价 js 代码。
+
+## 实现细节
+
+### callJS componentHook
+
+客户端通过 `callJS` 发送 `componentHook` 指令，用于触发前端组件的生命周期。
+
+```js
+callJS({
+  method: 'componentHook',
+
+  // 传递给 componentHook 方法的参数
+  args: [
+    instanceId,
+    componentId, // 组件的 ID, 由客户端生成
+    type, // 钩子的类型，目前仅考虑支持 lifecycle
+    hook, // 钩子的名称
+    options // 额外传给钩子的参数
+  ]
+})
+```
