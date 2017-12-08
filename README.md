@@ -83,18 +83,18 @@
 
 ## 例子
 
-> 把考虑到的情况都列出来了，还未全部支持。~~最终也不一定能全部支持~~。
+把考虑到的情况都列出来了，还未全部支持。~~最终也不一定能全部支持~~。
 
 **模板语法**
 
 + [动态文本 `{{}}`](http://dotwe.org/vue/7d0616648f9884223aaec295cdceaa9f)
-+ [绑定属性 `v-bind`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [循环 `v-for`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
++ [绑定属性 `v-bind`](http://dotwe.org/vue/cba00d48c33b44ef2bdd80c5e12e6a93) ([普通 list](http://dotwe.org/vue/f6a37fbeb5d7abf2d8c4875862b49ebc))
++ [循环 `v-for`](http://dotwe.org/vue/93abf05678536af08e60d32cba745d8d) ([普通 list](http://dotwe.org/vue/89921581f43493e6bbb617e63be267b6))
 + [多层循环](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [条件渲染 `v-if`/`v-else`/`v-else-if`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [双向绑定 `v-model`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [一次性渲染 `v-once`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [绑定事件 `v-on`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
++ [绑定事件 `v-on`](http://dotwe.org/vue/3c5ee8bf710d5817c129c3b69d2ec39b) ([普通 list](http://dotwe.org/vue/f1b3b14d1dcff5b832c8ed5ddbb9ce4d))
 + [动态样式](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [指令搭配使用](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 
