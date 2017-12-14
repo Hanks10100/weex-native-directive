@@ -203,6 +203,7 @@ var AppList = {
   }
 }
 
+// 某种商品卡片 http://dotwe.org/vue/14791cf9883b9bc1ca22f994415873d5
 var Card = {
   props: ['card', 'index'],
   data: function () {
