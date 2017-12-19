@@ -110,8 +110,8 @@
 
 **使用子组件**
 
-+ [纯静态子组件](http://dotwe.org/vue/b41041c6bb0f99e96843509f0a0d8e3d) ([普通 list](http://dotwe.org/vue/162404aea3127284041d2fd2515ee0c0))
-+ [无状态，有 props](http://dotwe.org/vue/49ff9da399e3fd375df328942a920f32) ([普通 list](http://dotwe.org/vue/fb815075d5a8c59d29d8b58fe6462f00))
++ [纯静态子组件](http://dotwe.org/vue/1cc3111c1d8a079d1efa48705a3f824e) ([普通 list](http://dotwe.org/vue/162404aea3127284041d2fd2515ee0c0))
++ [无状态，有 props](http://dotwe.org/vue/b486124093c3da16f7bd0207e99ff200) ([普通 list](http://dotwe.org/vue/fb815075d5a8c59d29d8b58fe6462f00))
 + [props 更新](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [有内部状态](http://dotwe.org/vue/66f6288251ddbe186b327379aa4ee99b) ([普通 list](http://dotwe.org/vue/d680d72dd30f3cee54c459d957a3e957))
 + [内部状态更新](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
