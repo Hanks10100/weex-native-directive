@@ -15,7 +15,7 @@
 
 原有 `<list>` 和 `<cell>` 组件的功能不受影响，针对新功能提供了新的 `<recycle-list>` 和 `<cell-slot>` 组件。如果想利用列表回收和复用的特性，使用新组件即可。
 
-> 在 Vue.js 中，该功能部分依赖与编译工具，请确保 `weex-loader` 的版本高于 `0.6.0`（其依赖的 `weex-vue-loader` 版本要高于 `0.5.0`）。
+> 在 Vue.js 中，该功能部分依赖与编译工具，请确保 `weex-loader` 的版本高于 `0.6.7`（其依赖的 `weex-vue-loader` 版本要高于 `0.5.6`）。
 
 ### `<recycle-list>`
 
@@ -23,19 +23,15 @@
 
 **支持的属性**
 
-目前支持的语法如下（临时方案）：
++ `for`: "(alias, index) in listData" **必选** 列表循环的表达式，该属性和 `v-for` 不同，它循环的不是当前节点，而是其中的子节点，通常配合 `switch` 使用。
+  + `alias`: {`String`} 指定数据中的每一项在模板中的别名。
+  + `index`: {`String`} 指定当前列表下标的变量名，下标值和列表数据的下标一致。
+  + `listData`: {`Array<Object>`} 列表数据，数据的每一项必须是对象，不能是原始值。
++ `switch`: {`String`} 数据中用于区分子模板类型的字段名，默认值是 `"templateType"`。
 
-+ `list-data`: {`Array<Object>`} **必选** 列表数据。
-+ `template-key`: {`String`} 数据中用于区分子模板类型的字段名，默认值是 `"templateType"`。
-+ `alias`: {`String`} 指定数据中的每一项在模板中的别名。
-+ `index`: {`String`} 指定当前列表下标的变量名，下标值和列表数据的下标一致。
+> `for` 和 `switch` 是仅适用于 Weex 平台的不以 `v-` 开头的模板指令，不能再添加 `v-bind` 的绑定语法。
 
-考虑支持更符合语义的语法，将 `list-data` 、`alias` 和 `index` 放在一起，用 `for` 表示，将 `template-key` 改成 `switch`：
-
-+ `for`: "(alias, index) in listData" **必选** 列表循环表达式的简写形式，语义同上。
-+ `switch`: 数据中用于区分子模板类型的字段名，默认值是 `"templateType"`。
-
-> `for` 和 `switch` 其实可以视为指令，是仅适用于 Weex 平台的不以 `v-` 开头的指令，和临时方案（标签属性）不一样，不能再添加 `v-bind` 的绑定语法。
+如果省略了 `switch` 属性，则只会将第一个 `<cell-slot>` 视为模板，多余的模板将会被忽略。
 
 ### `<cell-slot>`
 
@@ -43,61 +39,104 @@
 
 **支持的属性**
 
-目前支持的语法如下（临时方案）：
-
-+ `template-type`: {`String`} **必选** 当前模板的类型，只有和数据中的类型与当前目标类型匹配时才会渲染。
++ `case`: {`String`} 当前模板的类型，只有和数据中的类型与当前类型匹配时才会渲染。
++ `default`: {`String`} 表示当前模板为默认模板类型，如果数据项的类型没有匹配到任何类型，则渲染当前模板。如果存在多个 `default`，则只会使用第一个默认模板。
 + `key`: {`String`} 列表中每条数据的唯一键值，用于优化。
 
-考虑支持更符合语义的语法，将 `template-type` 改为 `case`：
-
-+ `case`: {`String`} **必选** 当前模板的类型，只有和数据中的类型与当前目标类型匹配时才会渲染。
-+ `key`: {`String`} 列表中每条数据的唯一键值，用于优化。
+在写了 `switch` 的情况下，`case` 和 `default` 必须写一个，否则该模板将会被忽略。
 
 ### 实例
 
-在上层语法中的使用方式如下（临时方案）：
+在上层语法中的使用方式如下：
 
 ```html
-<recycle-list :list-data="longList" template-key="cellType" alias="item" index="i">
-  <cell-slot template-type="A"> ... </cell-slot>
-  <cell-slot template-type="B"> ... </cell-slot>
+<recycle-list for="(item, i) in longList" switch="type">
+  <cell-slot case="A">
+    <text>- A {{i}} -</text>
+  </cell-slot>
+  <cell-slot case="B">
+    <text>- B {{i}} -</text>
+  </cell-slot>
 </recycle-list>
 ```
 
-优化后的语法（待编译工具支持了以后，统一使用这种语法）：
+如果有如下数据：
+
+```js
+const longList = [
+  { type: 'A' },
+  { type: 'B' },
+  { type: 'B' },
+  { type: 'A' },
+  { type: 'B' }
+]
+```
+
+则会生成如下等价节点：
 
 ```html
-<recycle-list for="(item, i) in longList" switch="cellType">
-  <cell-slot case="A"> ... </cell-slot>
-  <cell-slot case="B"> ... </cell-slot>
+<text>- A 0 -</text>
+<text>- B 1 -</text>
+<text>- B 2 -</text>
+<text>- A 3 -</text>
+<text>- B 4 -</text>
+```
+
+如果将模板合并成一个，也可以省略 `switch` 和 `case`，将例子进一步简化：
+
+```html
+<recycle-list for="(item, i) in longList">
+  <cell-slot>
+    <text>- {{item.type}} {{i}} -</text>
+  </cell-slot>
 </recycle-list>
 ```
 
-使用 `for` 、`switch` 和 `case` 更符合语义，也更直观一些。在 `<recycle-list>` 中使用 `for` 指定列表数据项和下边的别名，`switch` 指定了每项数据中用来判断模板的类型的字段名；`case` 用在 `<cell-slot>` 上，用来声明当前模板的类型。
+## 使用子组件
 
-> 参考 Weex online playground 上使用临时语法写的[例子](http://dotwe.org/vue/7d0616648f9884223aaec295cdceaa9f)（暂时还不支持编译[新语法](http://dotwe.org/vue/7e2edce1482c44e7a92229eb134220f1)），Web 端的渲染还不支持，使用最新版 Weex playground app 扫码可以查看原生渲染效果。目前最新版 playground app 还未在市场发布，代码在 apache/incubator-weex 仓库主分支中，可以自行打包。~~使用最新版手机淘宝扫码也可以查看渲染效果。~~
+在 `<recycle-list>` 中使用的子组件也将被视为模板，它的部分功能将会受到到影响。组件将不再执行 `render` 函数，而是执行另一个专门用来生成模板的 `@render` 函数，触发生命周期的时机也将会有差异。在开发组件时，给 `<template>` 标签添加 `recyclable` 属性，就可以表示当前组件可以用在 `<recycle-list>` 中。
+
+### 实例
+
+在 `<recycle-list>` 中使用了组件 `<banner>`：
+
+```html
+<recycle-list for="(item, i) in labels">
+  <cell-slot>
+    <banner></banner>
+  </cell-slot>
+</recycle-list>
+```
+
+`<banner>` 组件的定义如下：
+
+```html
+<template recyclable>
+  <text class="title">BANNER</text>
+</template>
+```
+
+更多细节可以参考：[完整代码](http://dotwe.org/vue/4a7446690e2c87ec0d39d8ee4884fa19)。
 
 ## 注意事项
 
-+ `<recycle-list>`
+> TODO
 
-## 例子
-
-把考虑到的情况都列出来了，还未全部支持。~~最终也不一定能全部支持~~。
+## 更多例子
 
 **模板语法**
 
-+ [绑定文本 `{{}}`](http://dotwe.org/vue/0658e5ec6c1d83e8c19adde7e0b2a0fa) ([普通 list](http://dotwe.org/vue/0f7f1c1f0a3271ed30a0c5adb6938976))
-+ [绑定属性 `v-bind`](http://dotwe.org/vue/6eb27e33b05182f2f453ebbde124d417) ([普通 list](http://dotwe.org/vue/f6a37fbeb5d7abf2d8c4875862b49ebc))
-+ [循环 `v-for`](http://dotwe.org/vue/6cd9625cf1b5912289189efdba33d34c) ([普通 list](http://dotwe.org/vue/89921581f43493e6bbb617e63be267b6))
-+ [多层循环](http://dotwe.org/vue/28145f9d5efd522ef507245829f04566) ([普通 list](http://dotwe.org/vue/8a961f87c6db8e0aa221748d037b6428))
++ [绑定文本 `{{}}`](http://dotwe.org/vue/5b25755d7371d16b3d000e0d173a5cab) ([普通 list](http://dotwe.org/vue/0f7f1c1f0a3271ed30a0c5adb6938976))
++ [绑定属性 `v-bind`](http://dotwe.org/vue/6455e2e8c1a717f9c09363ec9be663d1) ([普通 list](http://dotwe.org/vue/f6a37fbeb5d7abf2d8c4875862b49ebc))
++ [循环 `v-for`](http://dotwe.org/vue/966e644a4cbbbc401ab431889dc48677) ([普通 list](http://dotwe.org/vue/89921581f43493e6bbb617e63be267b6))
++ [多层循环](http://dotwe.org/vue/20a9681f9201ef1b7a68962fd9cb5eb5) ([普通 list](http://dotwe.org/vue/8a961f87c6db8e0aa221748d037b6428))
 + [条件渲染 `v-if`/`v-else`/`v-else-if`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [双向绑定 `v-model`](http://dotwe.org/vue/54500d15b5c8f2af2fbd443ab34af822) ([普通 list](http://dotwe.org/vue/46c4f9e8480e2e63be73c986d184bf0c))
++ [双向绑定 `v-model`](http://dotwe.org/vue/87fad731f8ea4cd4baa2906fde727a47) ([普通 list](http://dotwe.org/vue/317b4f70f5e278e6bf095feeab09ed21))
 + [一次性渲染 `v-once`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [绑定事件 `v-on`](http://dotwe.org/vue/cd211e74bcf2cd918284234380f3c43a) ([普通 list](http://dotwe.org/vue/f1b3b14d1dcff5b832c8ed5ddbb9ce4d))
++ [绑定事件 `v-on`](http://dotwe.org/vue/34bb833828861bf37e9d0574241d7c82) ([普通 list](http://dotwe.org/vue/7cdb9f7819f31ea38219b8b61dc87a3f))
 + [绑定样式](http://dotwe.org/vue/a95fca7835aa3fc8bf2c24ec68c7d8cd) ([普通 list](http://dotwe.org/vue/fe129e413d8a7ea5c90fcf2b5e5894a8))
 + [指令搭配使用](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [复杂压测例子](http://dotwe.org/vue/2bb860477f25bed1e681c6683a5168b6) ([普通 list](http://dotwe.org/vue/07734d19b15e3528c2f7b68ba870126f))
++ [复杂压测例子](http://dotwe.org/vue/593bb4f3fa7ac1d5da5b2906fa4c8bb0) ([普通 list](http://dotwe.org/vue/07734d19b15e3528c2f7b68ba870126f))
 
 **`<recycle-list>` 组件的功能**
 
@@ -106,14 +145,14 @@
 + [watch](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [生命周期](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [mixin](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [filter](http://dotwe.org/vue/7841d3430436bf01593d85303abb62f4) ([普通 list](http://dotwe.org/vue/4edc3cf51e9365282beb0d2872ef64e9))
++ [filter](http://dotwe.org/vue/2ee9fdb1bdd36da4bc996fb3273e8caa) ([普通 list](http://dotwe.org/vue/9fd19b7309c8e9e09e83826a44549210))
 
 **使用子组件**
 
-+ [纯静态子组件](http://dotwe.org/vue/1cc3111c1d8a079d1efa48705a3f824e) ([普通 list](http://dotwe.org/vue/162404aea3127284041d2fd2515ee0c0))
-+ [无状态，有 props](http://dotwe.org/vue/b486124093c3da16f7bd0207e99ff200) ([普通 list](http://dotwe.org/vue/fb815075d5a8c59d29d8b58fe6462f00))
++ [纯静态子组件](http://dotwe.org/vue/4a7446690e2c87ec0d39d8ee4884fa19) ([普通 list](http://dotwe.org/vue/1ab67bd0f19d5cf17fc358d73801f238))
++ [无状态，有 props](http://dotwe.org/vue/f716dfc90f7ec0f2ec142c45d814b76f) ([普通 list](http://dotwe.org/vue/42039b1ed8484c98051cc2fd1ee542bc))
 + [props 更新](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [有内部状态](http://dotwe.org/vue/66f6288251ddbe186b327379aa4ee99b) ([普通 list](http://dotwe.org/vue/d680d72dd30f3cee54c459d957a3e957))
++ [有内部状态](http://dotwe.org/vue/238224971654b45d29e42c9cfb245c46) ([普通 list](http://dotwe.org/vue/15eee87f0d46ecf60a59792f8be977a1))
 + [内部状态更新](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [绑定事件](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [生命周期](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
