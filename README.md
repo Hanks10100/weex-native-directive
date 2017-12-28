@@ -134,7 +134,7 @@ const longList = [
 + [双向绑定 `v-model`](http://dotwe.org/vue/87fad731f8ea4cd4baa2906fde727a47) ([普通 list](http://dotwe.org/vue/317b4f70f5e278e6bf095feeab09ed21))
 + [一次性渲染 `v-once`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [绑定事件 `v-on`](http://dotwe.org/vue/34bb833828861bf37e9d0574241d7c82) ([普通 list](http://dotwe.org/vue/7cdb9f7819f31ea38219b8b61dc87a3f))
-+ [绑定样式](http://dotwe.org/vue/a95fca7835aa3fc8bf2c24ec68c7d8cd) ([普通 list](http://dotwe.org/vue/fe129e413d8a7ea5c90fcf2b5e5894a8))
++ [绑定样式](http://dotwe.org/vue/d093c67d49c4e4388994fead4d1649d1) ([普通 list](http://dotwe.org/vue/fe129e413d8a7ea5c90fcf2b5e5894a8))
 + [指令搭配使用](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [复杂压测例子](http://dotwe.org/vue/593bb4f3fa7ac1d5da5b2906fa4c8bb0) ([普通 list](http://dotwe.org/vue/07734d19b15e3528c2f7b68ba870126f))
 
