@@ -138,25 +138,20 @@ const longList = [
 + [指令搭配使用](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
 + [复杂压测例子](http://dotwe.org/vue/593bb4f3fa7ac1d5da5b2906fa4c8bb0) ([普通 list](http://dotwe.org/vue/07734d19b15e3528c2f7b68ba870126f))
 
-**`<recycle-list>` 组件的功能**
-
-+ [数据更新](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [computed](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [watch](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [生命周期](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [mixin](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [filter](http://dotwe.org/vue/2ee9fdb1bdd36da4bc996fb3273e8caa) ([普通 list](http://dotwe.org/vue/9fd19b7309c8e9e09e83826a44549210))
-
 **使用子组件**
 
 + [纯静态子组件](http://dotwe.org/vue/4a7446690e2c87ec0d39d8ee4884fa19) ([普通 list](http://dotwe.org/vue/1ab67bd0f19d5cf17fc358d73801f238))
 + [无状态，有 props](http://dotwe.org/vue/f716dfc90f7ec0f2ec142c45d814b76f) ([普通 list](http://dotwe.org/vue/42039b1ed8484c98051cc2fd1ee542bc))
-+ [props 更新](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [有内部状态](http://dotwe.org/vue/238224971654b45d29e42c9cfb245c46) ([普通 list](http://dotwe.org/vue/15eee87f0d46ecf60a59792f8be977a1))
-+ [内部状态更新](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [绑定事件](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [生命周期](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [生命周期](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
++ [props 更新](http://dotwe.org/vue/3e4ba91f5333caa531a75cbdc54a8b70) ([普通 list](http://dotwe.org/vue/8cdc3565e66c86190c8f6cd6d0e4c20d))
++ [有内部状态](http://dotwe.org/vue/8b068a890470a8cbc737966d9e82d23a) ([普通 list](http://dotwe.org/vue/46076bc2bdd90d3e0b028994b053ef6d))
++ [生命周期](http://dotwe.org/vue/d214675550ff33d393363b92748603d8) ([普通 list](http://dotwe.org/vue/b2b6c239b6b4afebc50e50b7e4bd5519))
+
+**子组件的其他功能**
+
++ [computed](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
++ [watch](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
++ [mixin](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
++ [filter](http://dotwe.org/vue/2ee9fdb1bdd36da4bc996fb3273e8caa) ([普通 list](http://dotwe.org/vue/9fd19b7309c8e9e09e83826a44549210))
 
 **复杂用法**
 
