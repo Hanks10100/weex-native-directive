@@ -120,7 +120,22 @@ const longList = [
 
 ## 注意事项
 
-> TODO
+### 属性和文本的绑定
+
+绑定属性或者文本时，仅支持表达式，不支持函数调用，也不支持使用 filter。
+
+### 生命周期的行为
+
+子组件生命周期行为不一致。
+
+### 样式功能
+
+不支持绑定样式类名（`v-bind:class`）。
+
+### 子组件的限制
+
++ 更改组件中 `props` 的数据不会生效（仅前端中 VueComponent 对象中的值发生变化，该变化不会响应到客户端中）。
++ 子组件没有 virtual-dom，`vm.$el`、`vm.$vnode`、`vm._vnode` 等属性的内容不再有意义。
 
 ## 更多例子
 
@@ -145,6 +160,9 @@ const longList = [
 + [ ] [props 更新](http://dotwe.org/vue/3e4ba91f5333caa531a75cbdc54a8b70) ([普通 list](http://dotwe.org/vue/8cdc3565e66c86190c8f6cd6d0e4c20d))
 + [ ] [有内部状态](http://dotwe.org/vue/8b068a890470a8cbc737966d9e82d23a) ([普通 list](http://dotwe.org/vue/46076bc2bdd90d3e0b028994b053ef6d))
 + [ ] [生命周期](http://dotwe.org/vue/d214675550ff33d393363b92748603d8) ([普通 list](http://dotwe.org/vue/b2b6c239b6b4afebc50e50b7e4bd5519))
++ [ ] 深层子组件 (TODO)
++ [ ] 重复多个子组件 (TODO)
++ [ ] 子组件同时用在 recycle-list 和普通 list 中 (TODO)
 
 **子组件的其他功能**
 
@@ -154,9 +172,18 @@ const longList = [
 
 **复杂用法**
 
-+ [ ] [使用各种类型的组件](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [ ] [嵌套 list](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [ ] [使用 `<component>`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [ ] [使用 `<template>`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [ ] [使用 `<slot>`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [ ] [在子组件中使用 `<recycle-list>`](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
+下列功能暂未验证。
+
++ [ ] 更新模板结构 (TODO)
++ [ ] 多处绑定 listData (TODO)
++ [ ] 动态 switch/case (TODO)
++ [ ] 动态修改数据的 type (TODO)
++ [ ] header/loading/refresh (TODO)
++ [ ] 使用各种类型的子组件 (TODO)
++ [ ] 子组件的自定义事件 (TODO)
++ [ ] 父子组件通信过程 (TODO)
++ [ ] 在内部嵌套 list/scroller (TODO)
++ [ ] 使用 `<component>` (TODO)
++ [ ] 使用 `<template>` (TODO)
++ [ ] 使用 `<slot>` (TODO)
++ [ ] 在子组件中使用 `<recycle-list>` (TODO)
