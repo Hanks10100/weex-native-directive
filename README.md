@@ -152,6 +152,7 @@ const longList = [
 + [ ] [绑定样式](http://dotwe.org/vue/d093c67d49c4e4388994fead4d1649d1) ([普通 list](http://dotwe.org/vue/fe129e413d8a7ea5c90fcf2b5e5894a8))
 + [ ] [loadmore](http://dotwe.org/vue/89c51e90246286ad921b2fd20ccae339) ([普通 list](http://dotwe.org/vue/16a6ea76882bc4802874131cc48fa82b))
 + [x] [复杂压测例子](http://dotwe.org/vue/593bb4f3fa7ac1d5da5b2906fa4c8bb0) ([普通 list](http://dotwe.org/vue/07734d19b15e3528c2f7b68ba870126f))
++ [x] [无限列表](http://dotwe.org/vue/720573134b13f1164fe38df867dd2835) ([普通 list](http://dotwe.org/vue/d1a5ab3ca315d4aae782af8b3032dc42))
 
 **使用子组件**
 
