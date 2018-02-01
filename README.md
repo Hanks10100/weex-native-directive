@@ -4,48 +4,71 @@
 
 > **功能还未完成，请谨慎使用！**
 
-## 设计思路
+设计思路请参考 [Design.md](./Design.md)，具体的实现细节请参考 [Implementation.md](./Implementation.md)。
 
-+ 前端框架中不将长列表展开，而是将列表数据和子节点的结构发送到客户端。
-+ 客户端根据数据和子节点的结构渲染生成列表，并且实现节点的回收和复用。
-
-对页面和组件的开发方式有些影响，整体上讲是更强调【数据驱动】和【声明式】的开发方式了。细节请参考 [Design.md](./Design.md) 。
-
-## 使用方法
+## 基本用法
 
 原有 `<list>` 和 `<cell>` 组件的功能不受影响，针对新功能提供了新的 `<recycle-list>` 和 `<cell-slot>` 组件。如果想利用列表回收和复用的特性，使用新组件即可。
 
-> 在 Vue.js 中，该功能部分依赖与编译工具，请确保 `weex-loader` 的版本高于 `0.6.7`（其依赖的 `weex-vue-loader` 版本要高于 `0.5.6`）。
+> 该功能部分依赖与编译工具，请确保 `weex-loader` 的版本升级到最新。
 
-### `<recycle-list>`
+## `<recycle-list>`
 
-`<recycle-list>` 是一个新的列表容器，只能将 `<cell-slot>` 作为其直接子节点，使用其他节点无效。
+`<recycle-list>` 是一个新的列表容器，只能使用 `<cell-slot>` 作为其直接子节点，使用其他节点无效。
 
-**支持的属性**
+### `for` 属性
 
-+ `for`: "(alias, index) in listData" **必选** 列表循环的表达式，该属性和 `v-for` 不同，它循环的不是当前节点，而是其中的子节点，通常配合 `switch` 使用。
-  + `alias`: {`String`} 指定数据中的每一项在模板中的别名。
-  + `index`: {`String`} 指定当前列表下标的变量名，下标值和列表数据的下标一致。
-  + `listData`: {`Array<Object>`} 列表数据，数据的每一项必须是对象，不能是原始值。
-+ `switch`: {`String`} 数据中用于区分子模板类型的字段名，默认值是 `"templateType"`。
+在 `<recycle-list>` 添加 `for` 属性即可描述如何循环展开列表的数据，语法和 Vue 的 `v-for` 指令类似，但是它循环的是自己的子节点，并不是当前节点。
 
-> `for` 和 `switch` 是仅适用于 Weex 平台的不以 `v-` 开头的模板指令，不能再添加 `v-bind` 的绑定语法。
+`for` 属性支持如下两种写法：
+
++ `alias in expression`
++ `(alias, index) in expression`
+
+每一项对应的含义是：
+
+|      Name    |  Type  | Value |
+| ------------ | ------ | ----- |
+| `expression` | Array  | 列表数据 |
+| `alias`      | any    | 列表中每一项的数据 |
+| `index`      | Number | 当前数据项的下标 |
+
+### `switch` 属性
+
+在 `<recycle-list>` 添加 `switch` 属性可以用来指定数据中用于区分子模板类型的字段名，语义和编程语言里的 `switch` 一致，配合 `<cell-slot>` 中的 `case` 和 `default` 属性一起使用。
 
 如果省略了 `switch` 属性，则只会将第一个 `<cell-slot>` 视为模板，多余的模板将会被忽略。
 
-### `<cell-slot>`
+## `<cell-slot>`
 
-`<cell-slot>` 代表的是列表每一项的**模板**，并不是实际的节点，它只用来描述某一类*列表项*的结构，本身并不会渲染。`<cell-slot>` 的个数只表示*列表项*的种类个数，真实*列表项*的个数是由数据决定的，。
+`<cell-slot>` 代表的是列表每一项的**模板**，它只用来描述某一类*列表项*的结构，并不对应了实际的节点。`<cell-slot>` 的个数只表示*列表项*的种类个数，真实*列表项*的个数是由数据决定的。
 
-**支持的属性**
+### `case` 属性
 
-+ `case`: {`String`} 当前模板的类型，只有和数据中的类型与当前类型匹配时才会渲染。
-+ `default`: {`String`} 表示当前模板为默认模板类型，如果数据项的类型没有匹配到任何类型，则渲染当前模板。如果存在多个 `default`，则只会使用第一个默认模板。
-+ `key`: {`String`} 列表中每条数据的唯一键值，用于优化。
+声明了当前模板的类型，只有和数据中的类型与当前类型匹配时才会渲染，语义和编程语言里的 `case` 一致。
 
-在写了 `switch` 的情况下，`case` 和 `default` 必须写一个，否则该模板将会被忽略。
+所有模板中最多只会匹配到一项，按照模板的顺序从上到下匹配，一旦匹配成功就不在继续匹配下一个。
 
-### 实例
+### `default` 属性
+
+表示当前模板为默认模板类型，不需要指定值。如果数据项没有匹配到任何 `case` 类型，则渲染带有 `default` 模板。如果存在多个 `default`，则只会使用第一个默认模板。
+
+### `key` 属性
+
+可选属性，用于指定列表数据中可以作为唯一标识的键值，可以优化渲染性能。
+
+### 属性的省略
+
++ 如果没写 `switch`，无论有没有写 `case` 或 `default`，都只使用第一个模板。
++ 在写了 `switch` 的情况下，`case` 和 `default` 必须写一个，否则该模板将会被忽略。
+
+## 可复用的组件
+
+在 `<recycle-list>` 中使用的子组件也将被视为模板，在开发组件时给 `<template>` 标签添加 `recyclable` 属性，才可以用在 `<recycle-list>` 中。
+
+> 添加了 `recyclable` 属性并不会影响组件本身的功能，它仍然可以用其他在正常的组件里。
+
+## 实例
 
 在上层语法中的使用方式如下：
 
@@ -92,11 +115,7 @@ const longList = [
 </recycle-list>
 ```
 
-## 使用子组件
-
-在 `<recycle-list>` 中使用的子组件也将被视为模板，它的部分功能将会受到到影响。组件将不再执行 `render` 函数，而是执行另一个专门用来生成模板的 `@render` 函数，触发生命周期的时机也将会有差异。在开发组件时，给 `<template>` 标签添加 `recyclable` 属性，就可以表示当前组件可以用在 `<recycle-list>` 中。
-
-### 实例
+### 使用子组件
 
 在 `<recycle-list>` 中使用了组件 `<banner>`：
 
@@ -120,24 +139,54 @@ const longList = [
 
 ## 注意事项
 
-### 属性和文本的绑定
+**属性和文本的绑定**
 
-绑定属性或者文本时，仅支持表达式，不支持函数调用，也不支持使用 filter。
+绑定属性或者文本时，仅支持表达式，不支持函数调用，也不支持使用 filter。可以参考 [Implementation.md#支持的表达式](./Implementation.md#%E6%94%AF%E6%8C%81%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F)。
 
-### 生命周期的行为
+**样式功能的限制**
 
-子组件生命周期行为不一致。
+目前版本里还不支持绑定样式类名（`v-bind:class`），原因和进展可以参考 [#14](https://github.com/Hanks10100/weex-native-directive/issues/14)。
 
-### 样式功能
+**双向绑定**
 
-不支持绑定样式类名（`v-bind:class`）。
+`v-model` 还未调通，暂时不要使用。
+
+**`<slot>` 不可用**
+
+`<cell-slot>` 的功能和 [`<slot>`](https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots) 有部分重叠，而且更为激进，在概念上有冲突，存在很多边界情况无法完全支持。不要在 `<cell-slot>` 及其子组件里使用 `<slot>`。
 
 ### 子组件的限制
 
-+ 更改组件中 `props` 的数据不会生效（仅前端中 VueComponent 对象中的值发生变化，该变化不会响应到客户端中）。
-+ 子组件没有 virtual-dom，`vm.$el`、`vm.$vnode`、`vm._vnode` 等属性的内容不再有意义。
+**没有 Virtual DOM！**
+
+使用在 `<recycle-list>` 中的组件没有 Virtual DOM！与 Virtual DOM 相关的功能也不支持。
+
+下列这些属性都不再有意义，请不要使用：
+
++ `vm.$el`
++ `vm.$refs.xxx`
++ `vm.$vnode`
++ `vm.#slots`
++ `vm.#scopedSlots`
+
+在开发过程中尽量只处理数据，不要操作生成后的节点。
+
+**生命周期的行为差异**
+
+由于列表的渲染存在回收机制，节点渲染与否也与用户行为有关，组件的生命周期行为会有一些不一致。
+
+可回收长列表不会立即渲染所有节点，只有即将滚动到可视区域内时才开始渲染，假设有 100 条数据，一条数据对应一个组件，首屏（以及可滚动的安全区域内）只能展示 8 个组件，那就只有前 8 个组件被创建了。
+
++ 组件的 `beforeCreate` 和 `created` 也只有在页面即将渲染该组件时才会触发。
++ 同理，组件的 `beforeMount` 和 `mounted` 也只有在页面真正渲染了该组件即将挂载时才会触发。
+
+**自定义事件**
+
+`vm.$on`, `vm.$once`, `vm.$emit`, `vm.$off` 等功能还未完全调通，接口可用，但是行为可能有些差异（参数丢失），暂时不要使用。
 
 ## 更多例子
+
+> Web 版本的 `<recycle-list>` 还正在开发，online playground 上暂时无法预览效果。支持 `<recycle-list>` 的 playground app 还未发布，基于最新源码构建的 playground 才可以扫码查看效果。
 
 **模板语法**
 
@@ -146,35 +195,30 @@ const longList = [
 + [x] [循环 `v-for`](http://dotwe.org/vue/966e644a4cbbbc401ab431889dc48677) ([普通 list](http://dotwe.org/vue/89921581f43493e6bbb617e63be267b6))
 + [x] [多层循环](http://dotwe.org/vue/20a9681f9201ef1b7a68962fd9cb5eb5) ([普通 list](http://dotwe.org/vue/8a961f87c6db8e0aa221748d037b6428))
 + [x] [条件渲染 `v-if`/`v-else`/`v-else-if`](http://dotwe.org/vue/a645db4b73bd7c1cde669f91c7f70f3a) ([普通 list](http://dotwe.org/vue/01a1ce5b9b868de7b0e4d193110471c8))
-+ [ ] [双向绑定 `v-model`](http://dotwe.org/vue/87fad731f8ea4cd4baa2906fde727a47) ([普通 list](http://dotwe.org/vue/317b4f70f5e278e6bf095feeab09ed21))
-+ [ ] [绑定事件 `v-on`](http://dotwe.org/vue/34bb833828861bf37e9d0574241d7c82) ([普通 list](http://dotwe.org/vue/7cdb9f7819f31ea38219b8b61dc87a3f))
++ [x] [绑定事件 `v-on`](http://dotwe.org/vue/34bb833828861bf37e9d0574241d7c82) ([普通 list](http://dotwe.org/vue/7cdb9f7819f31ea38219b8b61dc87a3f))
 + [x] [一次性渲染 `v-once`](http://dotwe.org/vue/d515a48f5a4112bbe8d5ac80c315bb44) ([普通 list](http://dotwe.org/vue/502bbd141010d3d1019dd8cbcc538d71))
-+ [ ] [绑定样式](http://dotwe.org/vue/d093c67d49c4e4388994fead4d1649d1) ([普通 list](http://dotwe.org/vue/fe129e413d8a7ea5c90fcf2b5e5894a8))
-+ [ ] [loadmore](http://dotwe.org/vue/89c51e90246286ad921b2fd20ccae339) ([普通 list](http://dotwe.org/vue/16a6ea76882bc4802874131cc48fa82b))
++ [x] [绑定样式](http://dotwe.org/vue/d093c67d49c4e4388994fead4d1649d1) ([普通 list](http://dotwe.org/vue/fe129e413d8a7ea5c90fcf2b5e5894a8))
++ [x] [loadmore](http://dotwe.org/vue/89c51e90246286ad921b2fd20ccae339) ([普通 list](http://dotwe.org/vue/16a6ea76882bc4802874131cc48fa82b))
 + [x] [复杂压测例子](http://dotwe.org/vue/593bb4f3fa7ac1d5da5b2906fa4c8bb0) ([普通 list](http://dotwe.org/vue/07734d19b15e3528c2f7b68ba870126f))
 + [x] [无限列表](http://dotwe.org/vue/720573134b13f1164fe38df867dd2835) ([普通 list](http://dotwe.org/vue/d1a5ab3ca315d4aae782af8b3032dc42))
++ [ ] [双向绑定 `v-model`](http://dotwe.org/vue/87fad731f8ea4cd4baa2906fde727a47) ([普通 list](http://dotwe.org/vue/317b4f70f5e278e6bf095feeab09ed21))
 
 **使用子组件**
 
 + [x] [纯静态子组件](http://dotwe.org/vue/4a7446690e2c87ec0d39d8ee4884fa19) ([普通 list](http://dotwe.org/vue/1ab67bd0f19d5cf17fc358d73801f238))
 + [x] [无状态，有 props](http://dotwe.org/vue/f716dfc90f7ec0f2ec142c45d814b76f) ([普通 list](http://dotwe.org/vue/42039b1ed8484c98051cc2fd1ee542bc))
-+ [ ] [props 更新](http://dotwe.org/vue/3e4ba91f5333caa531a75cbdc54a8b70) ([普通 list](http://dotwe.org/vue/8cdc3565e66c86190c8f6cd6d0e4c20d))
-+ [ ] [有内部状态](http://dotwe.org/vue/8b068a890470a8cbc737966d9e82d23a) ([普通 list](http://dotwe.org/vue/46076bc2bdd90d3e0b028994b053ef6d))
++ [x] [props 更新](http://dotwe.org/vue/3e4ba91f5333caa531a75cbdc54a8b70) ([普通 list](http://dotwe.org/vue/8cdc3565e66c86190c8f6cd6d0e4c20d))
++ [x] [有内部状态](http://dotwe.org/vue/8b068a890470a8cbc737966d9e82d23a) ([普通 list](http://dotwe.org/vue/46076bc2bdd90d3e0b028994b053ef6d))
++ [x] [computed & watch](http://dotwe.org/vue/56ae40a63d7b02bb7e55a1fbfbefeb76) ([普通 list](http://dotwe.org/vue/c96218775a65b405368025fa81be0609))
 + [ ] [生命周期](http://dotwe.org/vue/d214675550ff33d393363b92748603d8) ([普通 list](http://dotwe.org/vue/b2b6c239b6b4afebc50e50b7e4bd5519))
-+ [ ] 深层子组件 (TODO)
-+ [ ] 重复多个子组件 (TODO)
-+ [ ] 子组件同时用在 recycle-list 和普通 list 中 (TODO)
-
-**子组件的其他功能**
-
-+ [ ] [computed & watch](http://dotwe.org/vue/56ae40a63d7b02bb7e55a1fbfbefeb76) ([普通 list](http://dotwe.org/vue/c96218775a65b405368025fa81be0609))
-+ [ ] [mixin](http://dotwe.org/vue/123b69b57e099036558745298fb6e8ca) (TODO)
-+ [ ] [filter](http://dotwe.org/vue/2ee9fdb1bdd36da4bc996fb3273e8caa) ([普通 list](http://dotwe.org/vue/9fd19b7309c8e9e09e83826a44549210))
 
 **复杂用法**
 
 下列功能暂未验证。
 
++ [ ] 深层子组件 (TODO)
++ [ ] 重复多个子组件 (TODO)
++ [ ] 子组件同时用在 recycle-list 和普通 list 中 (TODO)
 + [ ] 更新模板结构 (TODO)
 + [ ] 多处绑定 listData (TODO)
 + [ ] 动态 switch/case (TODO)
