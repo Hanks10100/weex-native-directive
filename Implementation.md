@@ -4,7 +4,10 @@
 
 ## 模板语法
 
-为了将模板的渲染逻辑声明式的发送给客户端，对组件的属性做了一些扩展。这些扩展目前都是放在组件的属性中的，可以分为【绑定】和【指令】两类，为了和普通属性区分，对属性名做了特殊约定。**绑定** 用于声明数据的取值方式，与渲染内容有关，以 `@` 开头；**指令** 用于声明节点的展开方式，与渲染行为有关，用 `[[]]` 包裹起来。
+为了将模板和声明式的渲染逻辑发送给客户端，约定了一些特殊的扩展语法，这些扩展语法目前都是放在组件的属性中的，可以分为【绑定】和【指令】两类，为了和普通属性区分，对属性名做了特殊约定。
+
++ **绑定** 用于声明数据的取值方式，与渲染内容有关，以 `@` 开头。
++ **指令** 用于声明节点的展开方式，与渲染行为有关，用 `[[]]` 包裹起来。
 
 具体的语法可以分为如下几类：
 
@@ -22,29 +25,115 @@
 
 ### 值绑定
 
-格式为 `{ "@binding": expression }`。
+在模板的属性值和样式值中，使用 `{ "@binding": expression }` 这种语法来表示该值是通过一个表达式计算出来的，属于动态内容，需要在渲染的时候替换成由数据和表达式计算出来的值。这个绑定语法可以出现在对象里，也可以出现在数组里。
 
-> TODO
+例如下面这一小段模板：
+
+```html
+<text>{{expression}}</text>
+```
+
+最终发送给客户端的是这样的结构：
+
+```js
+{
+  type: 'text',
+  attr: {
+    value: { '@binding': 'expression' }
+  }
+}
+```
+
+#### 值的绑定出现在数组里
+
+如果值的绑定出现在数组里，则 map 数组中所有元素，将其中带有 `@binding` 键值的对象视为动态内容，计算出相应的值，然后将其 reduce 成一条数据（默认使用字符串拼接）。
+
+例如下面这一小段模板：
+
+```html
+<text>{{who}} only slept for {{count}} hours yesterday.</text>
+```
+
+最终发送给客户端的是这样的结构：
+
+```js
+{
+  type: 'text',
+  attr: {
+    value: [
+      { '@binding': 'who' },
+      ' only slept for ',
+      { '@binding': 'count' },
+      ' hours yesterday.'
+    ]
+  }
+}
+```
+
+传入数据后会被渲染成：
+
+```js
+// data: [{ who: 'He', count: 'five' }]
+[{
+  type: 'text',
+  attr: {
+    value: 'He only slept for five hours yesterday.'
+  }
+}]
+```
+
+#### 值的绑定出现在对象里
+
+如果值的绑定出现在对象里，则将其每一个键值中绑定的 `@binding` 都计算出来。
+
+例如下面这一小段模板：
+
+```html
+<text :style="{ fontSize: '15px', color: title.color }"></text>
+```
+
+最终发送给客户端的是这样的结构：
+
+```js
+{
+  type: 'text',
+  style: {
+    fontSize: '"15px"',
+    color: { '@binding':  'title.color' }
+  }
+}
+```
 
 ### 事件绑定
 
-如果事件没绑定参数，则不做特殊处理；如果绑定了参数，则把参数编译成带有绑定信息的数组。
+如果事件处理函数没绑定参数，则不做特殊处理，和原先的格式一致，只把事件名称的字符串发给客户端；如果绑定了参数，则用一个对象表示，`type` 表示事件的名称，把参数列表编译成带有绑定信息的数组存放在 `params` 属性中。
 
-> TODO
+例如下面这一小段模板：
+
+```html
+<div @click="onclick" @appear="onappear(index, item.name)"></div>
+```
+
+最终发送给客户端的是这样的结构：
 
 ```js
 {
   type: 'div',
-  event: [{
-    type: 'click',
-    params: [{ '@binding': 'expression' }]
+  event: ['click', {
+    type: 'appear',
+    params: [
+      { '@binding': 'index' },
+      { '@binding': 'item.name' }
+    ]
   }]
 }
 ```
 
 ### 组件声明
 
-> TODO
+前端中的组件最终会展开成节点发送给客户端，客户端并不知道哪些节点会属于同一个组件，需要添加一些标识来声明哪些节点是属于一个前端组件的。
+
+在最终发给客户端的节点中，组件根节点的属性上会带有如下信息：
 
 |      Property      |   Type  | Note |
 | ------------------ | ------- | ---- |
@@ -52,38 +141,80 @@
 | `@templateId`      | String  | 必选，组件模板的唯一标识 |
 | `@componentProps`  | Object  | 可选，父组件传递给当前组件的绑定信息 |
 
+例如在某个组件用了子组件：
+
+```html
+<card :title="item.message"></card>
+```
+
+而子组件的定义是这样的：
+
+```html
+<!-- card component -->
+<template recyclable>
+  <text>{{title}}</text>
+</template>
+```
+
+最终发送给客户端的将会是这样的结构：
+
 ```js
 {
-  type: 'div',
+  type: 'text',
   attr: {
     '@isComponentRoot': true,
     '@templateId': 'virtual-component-template-1',
     '@componentProps': {
-      whatever: { '@binding': 'expression' }
-    }
+      title: { '@binding': 'item.message' }
+    },
+    value: { '@binding': 'title' }
   }
 }
 ```
 
+在模板中多处使用同一个组件，每一处的组件对应的 `@templateId` 都不一样，`@componentProps` 也很可能不一样。
+
 ### 条件指令
 
-> TODO
+在模板中，使用 `[[match]]` 作为条件指令，添加在节点的属性中，属性值是可以计算出真假值的表达式字符串。如果根据该表达式计算出来的值为 falsy，则不渲染该节点，也不渲染其后代节点。
 
-模板中的 `v-if` 、`v-else` 和 `v-else-if` 都将会被编译成一个表达式字符串，添加到节点的 `[[match]]` 属性中。
+Vue 中的 `v-if` 、`v-else` 和 `v-else-if` 指令都将会被编译成一个表达式字符串，添加到节点的 `[[match]]` 属性中。
+
+例如下面这一小段模板：
+
+```html
+<div v-if="x > 5"></div>
+<div v-else-if="y < 3"></div>
+<div v-else></div>
+```
+
+最终发送给客户端的是这样的结构：
 
 ```js
-{
+[{
   type: 'div',
   attr: {
-    '[[match]]': 'expression'
+    '[[match]]': 'x > 5'
     }
   }
-}
+}, {
+  type: 'div',
+  attr: {
+    '[[match]]': '!(x > 5) && (y < 3)'
+    }
+  }
+}, {
+  type: 'div',
+  attr: {
+    '[[match]]': '!(x > 5 || y < 3)'
+    }
+  }
+}]
 ```
 
 ### 循环指令
 
-模板中 `v-for` 对应的表达式将会被编译成一个特定格式的对象，添加到节点的 `[[repeat]]` 属性中。目前支持 `alias in expression` 和 `(alias, index) in expression` 这两种写法。
+在模板中，使用 `[[repeat]]` 作为循环指令，包含了三个字段，添加在节点的属性中。
 
 |    Property   |  Type  | Note |
 | ------------- | ------ | ---- |
@@ -91,10 +222,14 @@
 | `@alias`      | String | 必选，每一项的别名 |
 | `@index`      | String | 可选，下标的变量名 |
 
+为了便于使用，在上层可以使用 `alias in expression` 和 `(alias, index) in expression` 这两种简写形式描述一个循环指令。
+
+Vue 中的 `v-for` 指令对应的表达式将会被编译成一个特定格式的对象，添加到节点的 `[[repeat]]` 属性中。
+
 例如下面这一小段模板：
 
 ```html
-<div v-for="(item, i) in dataset.panels"></div>
+<div v-for="(item, i) in data.panels"></div>
 ```
 
 最终发送给客户端的是这样的结构：
@@ -104,7 +239,7 @@
   type: 'div',
   attr: {
     '[[repeat]]': {
-      '@expression': 'dataset.panels',
+      '@expression': 'data.panels',
       '@alias': 'item',
       '@index': 'i'
     }
@@ -115,6 +250,8 @@
 ### 一次性渲染指令
 
 如果模板中包含 `v-once` 指令，则会在节点的属性中添加 `[[once]]`，表示该节点及其后代节点只会渲染一次，数据改变时也不会更新。
+
+例如下面这一小段模板：
 
 ```html
 <div v-once></div>
@@ -174,6 +311,12 @@
 0. 向组件根节点标记 `@isComponentRoot`，并且生成 `@templateId` 和 `@componentProps` 加入根节点属性中。
 0. 将整个列表模板和初始数据一起（append tree 模式），以和渲染正常节点一样的方式发送给客户端。
 0. 客户端拿到模板和数据后，由数据驱动模板渲染，回收离屏节点，复用模板结构。
+
+### 模板匹配
+
+在 `<recycle-list>` 中传递了 `switch` 属性，指明了使用数据项中的哪个字段来匹配模板的类型。在 `<cell-slot>` 中传递了 `case` 或者 `default` 属性，指明了当前模板对应的类型值。
+
+在渲染过程中，遍历列表数据中每一项的值，基于 `switch` 的属性值计算出当前数据对应的模板类型，然后依次匹配每个模板中 `case` 对应的值，一条数据只能对应一个模板，没有匹配到则使用带有 `default` 属性的模板。如果没匹配到任何模板，则忽略这一条数据。
 
 ### 取值作用域
 
