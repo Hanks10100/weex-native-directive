@@ -48,7 +48,7 @@
 ![virtual component](./images/virtual-component.png)
 
 + Virtual Component Template 只有模板节点，没有状态也没生命周期，不执行 render 也不 update，监听事件。
-+ Virtual Component 没有节点也没有 render，有状态有生命周期，数据更新不触发渲染，不监听事件。
++ Virtual Component 不执行 render 也没有节点，有状态有生命周期，数据更新不触发渲染而是发给客户端。
 
 ## 客户端的改造
 
