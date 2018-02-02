@@ -337,7 +337,7 @@ Vue 中的 `v-for` 指令对应的表达式将会被编译成一个特定格式�
 0. 客户端使用 `initialState` 中的数据渲染当前组件中的模板，渲染完成后派发 `attach` 的钩子给前端。
 0. 在前端中触发 Virtual Component 的 `beforeMount` 和 `mounted` 生命周期。
 
-如果渲染组件的过程中，又遇到了包含 `@isComponentRoot` 的节点，则表示又遇到了子组件，重复上述渲染过程。
+如果渲染组件的过程中又遇到了包含 `@isComponentRoot` 的节点，则表示又遇到了子组件，重复上述渲染过程。
 
 ## 响应事件
 
@@ -351,7 +351,7 @@ Vue 中的 `v-for` 指令对应的表达式将会被编译成一个特定格式�
 
 ## 更新列表数据
 
-列表数据在使用时很可能会被更新，在前端框架里监听了列表数据的常用操作，会同时触发 `<recycle-list>` 的提供的原生方法（component method）将数据更新同步给客户端。
+列表数据在使用时很可能会被更新，在前端框架里监听了列表数据的常用操作，会同时触发 `<recycle-list>` 提供的原生方法（component method）将数据更新同步给客户端。
 
 
 |     Method    |               Arguments              | Return | Note |
@@ -381,7 +381,7 @@ Vue 中的 `v-for` 指令对应的表达式将会被编译成一个特定格式�
 0. 以修改了某条数据为例，如果某一项列表数据的内容发生了修改，则会触发 `updateData` 操作，把下标 `index` 和新的列表项数据 `itemData` 发送给客户端。
 0. 如果更新列表数据项的时候遇到了组件，则找到组件对应的 `componentId`，先根据 `@componentProps` 中的绑定信息计算出 `newPropsData`。
 0. 将 `newPropsData` 和最初生成的 `propsData` 做对比，如果存在差异，则将差异数据和 `componentId` 一起通过 `syncState` 的钩子发送给前端。
-0. 前端框架中重新计算 Virtual Component 的状态，如果数据有变动，则将新状态 `newState` 返回给客户端，并且触发 `beforeUpdate` 生命周期。
+0. 前端框架中重新计算 Virtual Component 的状态，如果数据有变动，则将新状态 `newState` 同步返回给客户端，并且触发 `beforeUpdate` 生命周期。
 0. 客户端根据 `newState` 渲染组件中的模板，并且用 `newPropsData` 替换旧的 `propsData`。
 0. 真实节点渲染完成后，通过 `componentHook` 向前端派发 `update` 的钩子。
 0. 在前端中触发 Virtual Component 的 `updated` 生命周期。
@@ -392,28 +392,27 @@ Vue 中的 `v-for` 指令对应的表达式将会被编译成一个特定格式�
 
 ![](./images/detach.png)
 
-0. 以删除数据为例，在前端中使用 `shift` 、 `pop` 、 `splice` 修改了列表数据时，都会触发 `remove` 指令。
-0. 在 `remove` 指令内部会调用组件的 `removeData` 原生方法，把开始删除的下标 `index` 和删除的个数 `count` 发给客户端。
+0. 以删除列表数据为例，在前端中使用 `shift` 、 `pop` 、 `splice` 修改了列表数据时，都会触发 `removeData` 操作，把开始删除的下标 `index` 和删除的个数 `count` 发给客户端。
 0. 在客户端中首先要找到被移除节点对应的 `componentId`，清除相应的组件数据并回收相应的模板。
 0. 然后通过 `componentHook` 向前端派发 `detach` 的钩子，把 `componentId` 发送给前端。
 0. 在前端中触发 Virtual Component 的 `beforeDestroy` 和 `destroyed` 生命周期。
 
-不止是在 `remove` 的时候才删除组件，如果修改了某条数据导致 `[[match]]` 不匹配，或者 `[[repeat]]` 遍历的数据变少了，也可能会触发组件的删除逻辑。
+不止是在删除一条列表数据的时候才删除组件，如果修改了某条数据导致 `[[match]]` 不匹配，或者 `[[repeat]]` 遍历的数据变少了，也可能会触发组件的删除逻辑。
 
-## 更新组件内部数据
+## 更新组件的内部状态
 
 ![](./images/updateComponentData.png)
 
-当前端中 Virtual Component 的状态发生变化之后，会主动触发数据的更新。
+在前端框架中，除了列表数据以外，每个组件都可能会有独立的内部状态，当 Virtual Component 的内部状态发生变化之后，会主动触发数据的更新。
 
 0. 前端框架中如果监听到 Virtual Component 的状态有变化，则计算出 `newState` 并且触发 `beforeUpdate` 的生命周期。
 0. 然后使用 `updateComponentData` 方法将 `componentId` 和 `newState` 发送给客户端。
 0. 客户端根据 `componentId` 找到相应的组件，使用 `newState` 重新渲染组件中的模板。
 0. 真实节点渲染完成后，通过 `componentHook` 向前端派发 `update` 的钩子。
-0. 前端中触发 Virtual Component 的 `updated` 生命周期。
+0. 在前端框架中触发 Virtual Component 的 `updated` 生命周期。
 
 ## 更新模板结构
 
 副作用太多，暂不支持。
 
-模板的结构和源码里的标签结构基本上是一一对应的，渲染逻辑也包含在了里边，模板指令也编译成了静态属性，一般不需要更新。
+模板的结构和源码里的标签结构基本上是一一对应的，包含了渲染逻辑，模板指令也编译成了静态属性，一般不需要更新。
