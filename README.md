@@ -58,6 +58,17 @@
 
 在 `<recycle-list>` 中使用的子组件也将被视为模板，在开发组件时给 `<template>` 标签添加 `recyclable` 属性，才可以用在 `<recycle-list>` 中。
 
+```html
+<template recyclable>
+  <div>
+    <text>...</text>
+  </div>
+</template>
+<script>
+  // ...
+</script>
+```
+
 > 添加了 `recyclable` 属性并不会影响组件本身的功能，它仍然可以用其他在正常的组件里。
 
 ## 实例
@@ -177,30 +188,29 @@ const longList = [
 + `vm.#slots`
 + `vm.#scopedSlots`
 
-`vm.$refs` 里的值可能是数组、子组件的实例、DOM 元素，在前端里比较常用，如果不支持对 Weex 里的 [`dom` 模块](http://weex-project.io/cn/references/modules/dom.html)和 [`animation` 模块](http://weex-project.io/cn/references/modules/animation.html)的功能也有影响。
-
-> 目前正在讨论技术方案，部分接口可能会重新设计，或者是在 `vm` 上透出专为 `<recycle-list>` 设计的接口。
+`vm.$refs` 里的值可能是数组、子组件的实例、DOM 元素，在前端里比较常用，如果不支持对 Weex 里的 [`dom` 模块](http://weex-project.io/cn/references/modules/dom.html)和 [`animation` 模块](http://weex-project.io/cn/references/modules/animation.html)的功能也有影响。目前正在讨论技术方案，部分接口可能会重新设计，或者是在 `vm` 上透出专为 `<recycle-list>` 设计的接口。
 
 **组件的属性**
 
-> **正在讨论实现方案**
-
-目前子组件的属性不支持函数。
+目前子组件的属性不支持函数。（正在讨论实现方案）
 
 ```html
 <sub-component :prop="item.xxx" />
 ```
 
-`item.xxx` 的类型可以对象、数组、字符串、数字、布尔值等，不支持函数。因为子组件的属性值需要在前端和客户端之间传递，所以仅支持可序列化的值。
+因为子组件的属性值需要在前端和客户端之间传递，所以仅支持可序列化的值。`item.xxx` 的类型可以是对象、数组、字符串、数字、布尔值等，不支持函数。
 
 **生命周期的行为差异**
 
-由于列表的渲染存在回收机制，节点渲染与否也与用户行为有关，组件的生命周期行为会有一些不一致。
+由于列表的渲染存在回收机制，节点渲染与否也与用户的滚动行为有关，组件的生命周期行为会有一些不一致。
 
-可回收长列表不会立即渲染所有节点，只有即将滚动到可视区域内时才开始渲染，假设有 100 条数据，一条数据对应一个组件，首屏（以及可滚动的安全区域内）只能展示 8 个组件，那就只有前 8 个组件被创建了。
+可回收长列表不会立即渲染所有节点，只有即将滚动到可视区域（以及可滚动的安全区域）内时才开始渲染，组件生命周期的语义没变，但是会延迟触发。
 
-+ 组件的 `beforeCreate` 和 `created` 也只有在页面即将渲染该组件时才会触发。
-+ 同理，组件的 `beforeMount` 和 `mounted` 也只有在页面真正渲染了该组件即将挂载时才会触发。
+假设有 100 条数据，一条数据了对应一个组件。渲染首屏时只能展示 8 条数据的节点，那就只有前 8 个组件被创建了，也只有前 8 个组件的生命周期被触发。
+
++ 组件的 `beforeCreate` 和 `created` 也只有在组件*即将创建*和*创建完成*时才会触发。
++ 同理，组件的 `beforeMount` 和 `mounted` 也只有页面真正渲染到了该组件，在*即将挂载*和*已经挂载*时才会触发。
++ 修改处于屏幕外的组件的数据，不一定会触发 `beforeUpdate` 和 `updated` 生命周期。（行为未定义，需要进一步排查）
 
 **自定义事件**
 
