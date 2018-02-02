@@ -18,20 +18,12 @@
 
 ### `for` 属性
 
-在 `<recycle-list>` 添加 `for` 属性即可描述如何循环展开列表的数据，语法和 Vue 的 `v-for` 指令类似，但是它循环的是自己的子节点，并不是当前节点。
+在 `<recycle-list>` 添加 `for` 属性即可描述如何循环展开列表的数据，语法和 Vue 的 `v-for` 指令类似，但是它循环的是自己内部的子节点，并不是当前节点。
 
 `for` 属性支持如下两种写法：
 
 + `alias in expression`
 + `(alias, index) in expression`
-
-每一项对应的含义是：
-
-|      Name    |  Type  | Value |
-| ------------ | ------ | ----- |
-| `expression` | Array  | 列表数据 |
-| `alias`      | any    | 列表中每一项的数据 |
-| `index`      | Number | 当前数据项的下标 |
 
 ### `switch` 属性
 
@@ -41,7 +33,7 @@
 
 ## `<cell-slot>`
 
-`<cell-slot>` 代表的是列表每一项的**模板**，它只用来描述某一类*列表项*的结构，并不对应了实际的节点。`<cell-slot>` 的个数只表示*列表项*的种类个数，真实*列表项*的个数是由数据决定的。
+`<cell-slot>` 代表的是列表每一项的**模板**，它只用来描述模板的结构，并不对应实际的节点。`<cell-slot>` 的个数只表示模板的种类数，真实列表项的个数是由数据决定的。
 
 ### `case` 属性
 
@@ -141,25 +133,41 @@ const longList = [
 
 **属性和文本的绑定**
 
-绑定属性或者文本时，仅支持表达式，不支持函数调用，也不支持使用 filter。可以参考 [Implementation.md#支持的表达式](./Implementation.md#%E6%94%AF%E6%8C%81%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F)。
+绑定属性或者文本时，仅支持表达式，不支持函数调用，也不支持使用 filter，可以参考 [Implementation.md#支持的表达式](./Implementation.md#%E6%94%AF%E6%8C%81%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F)。
 
-**样式功能的限制**
+例如，下列写法不可用：
 
-目前版本里还不支持绑定样式类名（`v-bind:class`），原因和进展可以参考 [#14](https://github.com/Hanks10100/weex-native-directive/issues/14)。
+```html
+<div :prop="capitalize(card.title)">
+  <text>{{ card.title | capitalize }}</text>
+</div>
+```
 
-**双向绑定**
+> 针对这种场景，推荐使用 [`computed` 属性](https://vuejs.org/v2/guide/computed.html)来实现。
 
-`v-model` 还未调通，暂时不要使用。
+因为模板的取值是由客户端实现的，而函数的定义在前端（filter 可以认为是在模板里调用函数的语法糖），如果每次取值都走一次通信的话，会大幅降低渲染性能。
 
 **`<slot>` 不可用**
 
 `<cell-slot>` 的功能和 [`<slot>`](https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots) 有部分重叠，而且更为激进，在概念上有冲突，存在很多边界情况无法完全支持。不要在 `<cell-slot>` 及其子组件里使用 `<slot>`。
 
+**样式功能的限制**
+
+> **计划支持**
+
+目前版本里还不支持绑定样式类名（`v-bind:class`），原因和进展可以参考 [#14](https://github.com/Hanks10100/weex-native-directive/issues/14)。
+
+**双向绑定**
+
+> **计划支持**
+
+`v-model` 还未调通，暂时不要使用。
+
 ### 子组件的限制
 
 **没有 Virtual DOM！**
 
-使用在 `<recycle-list>` 中的组件没有 Virtual DOM！与 Virtual DOM 相关的功能也不支持。
+使用在 `<recycle-list>` 中的组件没有 Virtual DOM！与 Virtual DOM 相关的功能也不支持。在开发过程中尽量只处理数据，不要操作生成后的节点。
 
 下列这些属性都不再有意义，请不要使用：
 
@@ -169,7 +177,21 @@ const longList = [
 + `vm.#slots`
 + `vm.#scopedSlots`
 
-在开发过程中尽量只处理数据，不要操作生成后的节点。
+`vm.$refs` 里的值可能是数组、子组件的实例、DOM 元素，在前端里比较常用，如果不支持对 Weex 里的 [`dom` 模块](http://weex-project.io/cn/references/modules/dom.html)和 [`animation` 模块](http://weex-project.io/cn/references/modules/animation.html)的功能也有影响。
+
+> 目前正在讨论技术方案，部分接口可能会重新设计，或者是在 `vm` 上透出专为 `<recycle-list>` 设计的接口。
+
+**组件的属性**
+
+> **正在讨论实现方案**
+
+目前子组件的属性不支持函数。
+
+```html
+<sub-component :prop="item.xxx" />
+```
+
+`item.xxx` 的类型可以对象、数组、字符串、数字、布尔值等，不支持函数。因为子组件的属性值需要在前端和客户端之间传递，所以仅支持可序列化的值。
 
 **生命周期的行为差异**
 
@@ -181,6 +203,8 @@ const longList = [
 + 同理，组件的 `beforeMount` 和 `mounted` 也只有在页面真正渲染了该组件即将挂载时才会触发。
 
 **自定义事件**
+
+> **计划支持**
 
 `vm.$on`, `vm.$once`, `vm.$emit`, `vm.$off` 等功能还未完全调通，接口可用，但是行为可能有些差异（参数丢失），暂时不要使用。
 
@@ -210,11 +234,12 @@ const longList = [
 + [x] [props 更新](http://dotwe.org/vue/3e4ba91f5333caa531a75cbdc54a8b70) ([普通 list](http://dotwe.org/vue/8cdc3565e66c86190c8f6cd6d0e4c20d))
 + [x] [有内部状态](http://dotwe.org/vue/8b068a890470a8cbc737966d9e82d23a) ([普通 list](http://dotwe.org/vue/46076bc2bdd90d3e0b028994b053ef6d))
 + [x] [computed & watch](http://dotwe.org/vue/56ae40a63d7b02bb7e55a1fbfbefeb76) ([普通 list](http://dotwe.org/vue/c96218775a65b405368025fa81be0609))
++ [x] [移除组件](http://dotwe.org/vue/9daea5fce906eb306e363fc90085f138) ([普通 list](http://dotwe.org/vue/b217c818532cf2b1b488be8987d60efa))
 + [ ] [生命周期](http://dotwe.org/vue/d214675550ff33d393363b92748603d8) ([普通 list](http://dotwe.org/vue/b2b6c239b6b4afebc50e50b7e4bd5519))
 
 **复杂用法**
 
-下列功能暂未验证。
+下列功能暂未验证，欢迎贡献例子。
 
 + [ ] 深层子组件 (TODO)
 + [ ] 重复多个子组件 (TODO)
