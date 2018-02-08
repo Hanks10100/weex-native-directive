@@ -1,4 +1,4 @@
-[Proposal](https://github.com/Hanks10100/incubator-weex/issues/1)
+[Proposal](https://github.com/Hanks10100/incubator-weex/issues/1) | [README](./README.md) | [Implementation](./Implementation.md)
 
 # 长列表的复用方案
 
@@ -31,7 +31,7 @@
 常规组件的渲染过程可以分为如下这几个步骤：
 
 1. 创建前端组件
-2. 生成 Virtual DOM
+2. 构建 Virtual DOM
 3. 生成“真实” DOM
 4. 发送渲染指令
 5. 绘制原生 UI
@@ -50,7 +50,7 @@ Vue 框架使用组件化的开发方式构建页面，整个页面可以划分�
 
 如果给同一个模板传入多条数据，就会生成多个组件实例，这可以算是组件的复用。如上图所示，假如有一个组件模板和两条数据，渲染时会创建两个 Vue Component 的实例，每个组件实例的内部状态是不一样的。
 
-### 生成 Virtual DOM
+### 构建 Virtual DOM
 
 Vue Component 的渲染过程，可以简单理解为组件实例执行 `render` 函数生成 `VNode` 节点树的过程，也就是构建 Virtual DOM 的生成过程。自定义的组件在这个过程中被展开成了平台支持的节点，例如图中的 `VNode` 节点都是和平台提供的原生节点一一对应的，它的类型必须在 [Weex 支持的原生组件](http://weex-project.io/references/components/index.html)范围内。
 
@@ -106,17 +106,37 @@ Vue Component 的渲染过程，可以简单理解为组件实例执行 `render`
 
 ### 使用 Virtual Component 管理组件状态（待补充）
 
-客户端只根据模板和数据就能渲染出来节点，看起来必须要得函数式组件才可以做到，也就是要求组件必须是不含内部状态的，然而实际应用中绝大多数组件都含有内部状态的，只做到这一步是远远不够的。
+想让客户端只根据模板和数据就能渲染出来节点，看起来只有函数式组件才可以做到，也就是要求组件必须是不含内部状态的，然而实际应用中绝大多数组件都含有内部状态的，只做到这一步是远远不够的。
 
 对于包含了状态的组件，渲染过程就比较复杂了，因为组件内部状态的处理逻辑（`data`,`watch`, `computed`）都在前端中，然而模板和数据都已经发给客户端处理了，所以需要经过多个回合的通信来解决状态同步问题。详细处理过程可以参考 [Implementation.md#渲染过程](Implementation.md#%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B)
 
 为了实现可复用的原生组件，在前端框架中引入了这两个概念：
 
-+ Virtual Component Template: 虚拟组件模板。包含了带有原生模板指令的节点，监听节点上的事件，但是不包含任何状态，不会触发任何更新，也不包含生命周期。整个过程中只会渲染一次，目的是将模板的结构发给客户端，渲染时不执行 `render` 函数，而是执行定制的 `@render` 函数。
-+ Virtual Component: 虚拟组件。包含内部状态和生命周期，但是并不渲染，不执行 render 函数也没有 `VNode` 节点，也不监听事件，内部状态更新时不会触发渲染而是数据改动发给客户端。
++ **Virtual Component Template**: 虚拟组件模板。包含了带有原生模板指令的节点，监听节点上的事件，但是不包含任何状态，不会触发更新，也没有生命周期。整个过程中只会渲染一次，目的是将模板的结构发给客户端。
++ **Virtual Component**: 虚拟组件。包含内部状态和生命周期，但是并不渲染，不执行 render 函数也没有 `VNode` 节点，也不监听事件，内部状态更新时不会触发渲染而是数据改动发给客户端。
 
 ![virtual component](./images/virtual-component.png)
 
+在渲染的过程中，如果发现某个组件用在了 `<recycle-list>` 里，就不再走之前的处理逻辑，而是创建一个 Virtual Component Template，并且不初始化任何状态（`data`,`watch`, `computed`）、不绑定生命周期，但是会初始化自定义事件的功能。渲染组件时不执行 `render` 函数，而是执行定制的 `@render` 函数生成带有原生渲染指令的模板结构，这个结构将一次性发给客户端，后续不会再修改。
+
+在创建 Virtual Component Template 时，会监听客户端原生组件的 `create` 生命周期钩子，[当客户端派发了 `create` 的时候](./Implementation.md#%E6%B8%B2%E6%9F%93%E5%AD%90%E7%BB%84%E4%BB%B6)，才会真正的开始创建只含状态不含节点的 Virtual Component。虚拟组件模板只有一份，但是从同一份模板创建出的 Virtual Component 会有多个，与客户端发送的 `create` 钩子的次数有关，与数据有关。另外，由于事件是绑定在节点上的，原生 UI 捕获到的事件只会派发给 Virtual Component Template，然后再找到相应的 Virtual Component 并以其为作用域执行事件处理函数。
+
+Virtual Component 内部只管理数据，即使数据有变动也不会触发渲染，而是调用特殊接口向客户端[更新组件的内部状态](./Implementation.md#%E6%9B%B4%E6%96%B0%E7%BB%84%E4%BB%B6%E7%9A%84%E5%86%85%E9%83%A8%E7%8A%B6%E6%80%81)，由客户端根据新数据更新组件的 UI。在创建 Virtual Component 时，会监听客户端原生组件的 `attach` 、`detach` 、 `update` 、 `syncState` 生命周期，生命周期的派发有客户端来控制，[语义和前端框架略有差异]()，具体细节可以参考列表的[渲染过程](./Implementation.md#%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B)和[更新过程](./Implementation.md#%E6%9B%B4%E6%96%B0%E5%88%97%E8%A1%A8%E6%95%B0%E6%8D%AE)。
+
+生命周期对应表如下：
+
+|   |   Native  |       Vue     |           Rax             |
+| - | --------- | ------------- | ------------------------- |
+|   | create    | beforeCreate  | constructor               |
+| * | create    | created       | -                         |
+|   | attach    | beforeMount   | componentWillMount        |
+| * | attach    | mounted       | componentDidMount         |
+|   | -         | -             | componentWillReceiveProps |
+|   | -         | -             | shouldComponentUpdate     |
+|   | update    | beforeUpdate  | componentWillUpdate       |
+| * | update    | updated       | componentDidUpdate        |
+| * | detach    | beforeDestroy | componentWillUnmount      |
+|   | detach    | destroyed     | -                         |
 
 ## 特性分析
 

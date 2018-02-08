@@ -142,7 +142,7 @@ const longList = [
 
 ## 注意事项
 
-**属性和文本的绑定**
+### 属性和文本的绑定
 
 绑定属性或者文本时，仅支持表达式，不支持函数调用，也不支持使用 filter，可以参考 [Implementation.md#支持的表达式](./Implementation.md#%E6%94%AF%E6%8C%81%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F)。
 
@@ -158,17 +158,21 @@ const longList = [
 
 因为模板的取值是由客户端实现的，而函数的定义在前端（filter 可以认为是在模板里调用函数的语法糖），如果每次取值都走一次通信的话，会大幅降低渲染性能。
 
-**`<slot>` 不可用**
+### `<slot>` 不可用
 
 `<cell-slot>` 的功能和 [`<slot>`](https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots) 有部分重叠，而且更为激进，在概念上有冲突，存在很多边界情况无法完全支持。不要在 `<cell-slot>` 及其子组件里使用 `<slot>`。
 
-**样式功能的限制**
+### v-once 不会优化渲染性能
+
+和前端框架中的理解不同，客户端里要实现复用的逻辑，会标记模板节点的状态，添加了 `v-once` 能保证节点只渲染一次，但是并不一定能优化渲染性能，反而可能会拖慢客户端复用节点时的比对效率。
+
+### 样式功能的限制
 
 > **计划支持**
 
 目前版本里还不支持绑定样式类名（`v-bind:class`），原因和进展可以参考 [#14](https://github.com/Hanks10100/weex-native-directive/issues/14)。
 
-**双向绑定**
+### 双向绑定
 
 > **计划支持**
 
@@ -176,7 +180,7 @@ const longList = [
 
 ### 子组件的限制
 
-**没有 Virtual DOM！**
+#### 没有 Virtual DOM！
 
 使用在 `<recycle-list>` 中的组件没有 Virtual DOM！与 Virtual DOM 相关的功能也不支持。在开发过程中尽量只处理数据，不要操作生成后的节点。
 
@@ -190,7 +194,7 @@ const longList = [
 
 `vm.$refs` 里的值可能是数组、子组件的实例、DOM 元素，在前端里比较常用，如果不支持对 Weex 里的 [`dom` 模块](http://weex-project.io/cn/references/modules/dom.html)和 [`animation` 模块](http://weex-project.io/cn/references/modules/animation.html)的功能也有影响。目前正在讨论技术方案，部分接口可能会重新设计，或者是在 `vm` 上透出专为 `<recycle-list>` 设计的接口。
 
-**组件的属性**
+#### 组件的属性
 
 目前子组件的属性不支持函数。（正在讨论实现方案）
 
@@ -200,7 +204,7 @@ const longList = [
 
 因为子组件的属性值需要在前端和客户端之间传递，所以仅支持可序列化的值。`item.xxx` 的类型可以是对象、数组、字符串、数字、布尔值等，不支持函数。
 
-**生命周期的行为差异**
+#### 生命周期的行为差异
 
 由于列表的渲染存在回收机制，节点渲染与否也与用户的滚动行为有关，组件的生命周期行为会有一些不一致。
 
@@ -212,7 +216,7 @@ const longList = [
 + 同理，组件的 `beforeMount` 和 `mounted` 也只有页面真正渲染到了该组件，在*即将挂载*和*已经挂载*时才会触发。
 + 修改处于屏幕外的组件的数据，不一定会触发 `beforeUpdate` 和 `updated` 生命周期。（行为未定义，需要进一步排查）
 
-**自定义事件**
+#### 组件的自定义事件
 
 > **计划支持**
 
