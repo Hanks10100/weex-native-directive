@@ -1,4 +1,4 @@
-[Proposal](https://github.com/Hanks10100/incubator-weex/issues/1) | [README](./README.md) | [Implementation](./Implementation.md)
+[Proposal](https://github.com/Hanks10100/incubator-weex/issues/1) | [Readme](./README.md) | [Implementation](./Implementation.md)
 
 # 长列表的复用方案
 
@@ -104,7 +104,7 @@ Vue Component 的渲染过程，可以简单理解为组件实例执行 `render`
 
 无论真实的数据有多少条，真实渲染的只有可滚动区域内的节点，这样不仅可以加快首屏的渲染速度，内存的占用量也不会随着列表长度大幅增长。
 
-### 使用 Virtual Component 管理组件状态（待补充）
+### 使用 Virtual Component 管理组件状态
 
 想让客户端只根据模板和数据就能渲染出来节点，看起来只有函数式组件才可以做到，也就是要求组件必须是不含内部状态的，然而实际应用中绝大多数组件都含有内部状态的，只做到这一步是远远不够的。
 
@@ -121,7 +121,7 @@ Vue Component 的渲染过程，可以简单理解为组件实例执行 `render`
 
 在创建 Virtual Component Template 时，会监听客户端原生组件的 `create` 生命周期钩子，[当客户端派发了 `create` 的时候](./Implementation.md#%E6%B8%B2%E6%9F%93%E5%AD%90%E7%BB%84%E4%BB%B6)，才会真正的开始创建只含状态不含节点的 Virtual Component。虚拟组件模板只有一份，但是从同一份模板创建出的 Virtual Component 会有多个，与客户端发送的 `create` 钩子的次数有关，与数据有关。另外，由于事件是绑定在节点上的，原生 UI 捕获到的事件只会派发给 Virtual Component Template，然后再找到相应的 Virtual Component 并以其为作用域执行事件处理函数。
 
-Virtual Component 内部只管理数据，即使数据有变动也不会触发渲染，而是调用特殊接口向客户端[更新组件的内部状态](./Implementation.md#%E6%9B%B4%E6%96%B0%E7%BB%84%E4%BB%B6%E7%9A%84%E5%86%85%E9%83%A8%E7%8A%B6%E6%80%81)，由客户端根据新数据更新组件的 UI。在创建 Virtual Component 时，会监听客户端原生组件的 `attach` 、`detach` 、 `update` 、 `syncState` 生命周期，生命周期的派发有客户端来控制，[语义和前端框架略有差异]()，具体细节可以参考列表的[渲染过程](./Implementation.md#%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B)和[更新过程](./Implementation.md#%E6%9B%B4%E6%96%B0%E5%88%97%E8%A1%A8%E6%95%B0%E6%8D%AE)。
+Virtual Component 内部只管理数据，即使数据有变动也不会触发渲染，而是调用特殊接口向客户端[更新组件的内部状态](./Implementation.md#%E6%9B%B4%E6%96%B0%E7%BB%84%E4%BB%B6%E7%9A%84%E5%86%85%E9%83%A8%E7%8A%B6%E6%80%81)，由客户端根据新数据更新组件的 UI。在创建 Virtual Component 时，会监听客户端原生组件的 `attach` 、`detach` 、 `update` 、 `syncState` 生命周期，生命周期的派发有客户端来控制，[语义和前端框架略有差异](./README.md#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%9A%84%E8%A1%8C%E4%B8%BA%E5%B7%AE%E5%BC%82)，具体细节可以参考列表的[渲染过程](./Implementation.md#%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B)和[更新过程](./Implementation.md#%E6%9B%B4%E6%96%B0%E5%88%97%E8%A1%A8%E6%95%B0%E6%8D%AE)。
 
 生命周期对应表如下：
 

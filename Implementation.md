@@ -1,4 +1,4 @@
-[README](./README.md) | [Design](./Design.md)
+[Readme](./README.md) | [Design](./Design.md)
 
 # 实现细节
 
