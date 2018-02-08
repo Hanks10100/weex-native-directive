@@ -248,7 +248,7 @@ const longList = [
 + [x] [props 更新](http://dotwe.org/vue/3e4ba91f5333caa531a75cbdc54a8b70) ([普通 list](http://dotwe.org/vue/8cdc3565e66c86190c8f6cd6d0e4c20d))
 + [x] [有内部状态](http://dotwe.org/vue/8b068a890470a8cbc737966d9e82d23a) ([普通 list](http://dotwe.org/vue/46076bc2bdd90d3e0b028994b053ef6d))
 + [x] [computed & watch](http://dotwe.org/vue/56ae40a63d7b02bb7e55a1fbfbefeb76) ([普通 list](http://dotwe.org/vue/c96218775a65b405368025fa81be0609))
-+ [x] [移除组件](http://dotwe.org/vue/9daea5fce906eb306e363fc90085f138) ([普通 list](http://dotwe.org/vue/b217c818532cf2b1b488be8987d60efa))
++ [x] [移除组件](http://dotwe.org/vue/769285a865b9d2f4e8d8cb7e5340012c) ([普通 list](http://dotwe.org/vue/b217c818532cf2b1b488be8987d60efa))
 + [ ] [生命周期](http://dotwe.org/vue/d214675550ff33d393363b92748603d8) ([普通 list](http://dotwe.org/vue/b2b6c239b6b4afebc50e50b7e4bd5519))
 
 **复杂用法**
