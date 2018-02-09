@@ -137,7 +137,3 @@ Virtual Component 内部只管理数据，即使数据有变动也不会触发�
 | * | update    | updated       | componentDidUpdate        |
 | * | detach    | beforeDestroy | componentWillUnmount      |
 |   | detach    | destroyed     | -                         |
-
-## 特性分析
-
-分析优缺点，待补充。
