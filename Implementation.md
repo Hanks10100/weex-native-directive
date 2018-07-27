@@ -418,3 +418,45 @@ Vue 中的 `v-for` 指令对应的表达式将会被编译成一个特定格式�
 副作用太多，暂不支持。
 
 模板的结构和源码里的标签结构基本上是一一对应的，包含了渲染逻辑，模板指令也编译成了静态属性，一般不需要更新。
+
+## Ref 支持
+
+为了模拟 ref，Native 端提供了VirtalElement 结构，调用`this.$refs.refName`以后会返回如下结构的对象：
+
+```typescript
+declare type WeexVirtalElement = {
+  attrs: Object;
+  type: string;
+  ref: string;
+  '[[VirtualElement]]': true;
+}
+```
+
+在`<recycle-list>`事件和子组件生命周期中，Native 会向前端返回 ref 结构映射：
+
+```typescript
+declare type WeexComponentHookInstance = {
+  virtualComponentId?: string; // <recycle-list>事件中不传入
+  position: number;
+  refs: {
+    [string]: Array<WeexVirtalElement>
+  }
+}
+```
+
+### `<recycle-list>`事件
+
+在 `<recycle-list>`上会默认添加以下两个事件监听：
+
+* _attach_slot：每个cell-slot载入或者更新时触发，传入需要更新的 ref 结构映射
+* _detach_slot：每个cell-slot回收触发，传入需要删除的 ref 结构映射
+
+特殊情况：如果cell-slot中有用 v-for，那么返回的 ref 是一个`length > 1`的数组，并且其他cell-slot中不能使用这个ref（前端约定），[例子](http://dotwe.org/vue/4989a3b18bbefd1e9d845b7fc6e6b09c)
+
+### 子组件生命周期
+
+通过`registerComponentHook`添加子组件生命周期的监听：
+
+* attach：子组件挂载的时候触发，传入需要添加的 ref 结构映射
+* update：子组件更新的时候触发，传入需要更新的 ref 结构映射
+* detach：子组件被销毁的时候触发，传入需要删除的 ref 结构映射
